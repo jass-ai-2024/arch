@@ -7,7 +7,6 @@ router = APIRouter(prefix="/v1", tags=["architecture"])
 
 class ArchitectureRequest(BaseModel):
     project_description: str
-    requirements: List[str]
 
 class ArchitectureResponse(BaseModel):
     deployment: Dict[str, str]
@@ -65,8 +64,6 @@ async def generate_architecture(request: ArchitectureRequest) -> ArchitectureRes
         user_message = {
             "role": "user",
             "content": f"""Project Description: {request.project_description}
-            Requirements:
-            {chr(10).join(f'- {req}' for req in request.requirements)}
             
             Please provide detailed architectural recommendations for your specific area."""
         }
