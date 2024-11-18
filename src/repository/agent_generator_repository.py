@@ -4,7 +4,7 @@ from typing import Dict, List
 from swarm import Swarm, Agent
 
 
-class AgentGenerateServ:
+class AgentGenerateRepository:
     def __init__(self, agent_name: str, instructions: str):
         self.client = Swarm()
         self.agent = Agent(

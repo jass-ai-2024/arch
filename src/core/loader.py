@@ -1,5 +1,5 @@
-from .prompt import Prompts
+from .prompt import agent_descriptions
 from .config import Configs
 
-prompts = Prompts()
+prompts = agent_descriptions
 configs = Configs()
