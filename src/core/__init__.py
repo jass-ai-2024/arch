@@ -1,1 +1,1 @@
-from .loader import prompts, agent_descriptions
+from .loader import prompts, configs, openai_client
