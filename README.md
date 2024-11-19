@@ -33,4 +33,4 @@ In the realm of software development, creating comprehensive architectural solut
 - Oleg Shatov
 - Oleg Zagorulko
 - Sim Roman
-- Svytolav Milovidov
+- Svyatoslav Milovidov
