@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from typing import Dict, List
 from swarm import Swarm, Agent
 
+from src.service.tokens_logging import count_tokens
+
 router = APIRouter(prefix="/v1", tags=["architecture"])
 
 class ArchitectureRequest(BaseModel):
@@ -69,9 +71,13 @@ async def generate_architecture(request: ArchitectureRequest) -> ArchitectureRes
         }
         
         # Get responses from each agent
-        deployment_response = client.run(agent=deployment_agent, messages=[user_message])
-        testing_response = client.run(agent=testing_agent, messages=[user_message])
-        research_response = client.run(agent=research_agent, messages=[user_message])
+        @count_tokens
+        def get_agent_response(*args, **kwargs):
+            return client.run(*args, **kwargs)
+            
+        deployment_response = get_agent_response(agent=deployment_agent, messages=[user_message])
+        testing_response = get_agent_response(agent=testing_agent, messages=[user_message]) 
+        research_response = get_agent_response(agent=research_agent, messages=[user_message])
         
         return ArchitectureResponse(
             deployment={"solution": deployment_response.messages[-1]["content"]},
