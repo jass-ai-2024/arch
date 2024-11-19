@@ -1,9 +1,6 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List
-from swarm import Swarm, Agent
+from swarm import Agent, Swarm
 
-from src.core import openai_client
+from core import openai_client
 
 
 class AgentGenerateRepository:
