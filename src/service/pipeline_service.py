@@ -1,5 +1,5 @@
-from src.core import prompts
-from src.repository import AgentGenerateRepository
+from core import prompts
+from repository import AgentGenerateRepository
 
 
 class Pipeline:
