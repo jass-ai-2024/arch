@@ -119,7 +119,6 @@ class ArchitectureAgent:
                     except Exception as puml_error:
                         print(f"PlantUML Error: {str(puml_error)}")
                         print("Trying to fix PlantUML code...")
-                        # Попытка исправить код
                         fixed_code = puml_code.replace('\n\n', '\n').strip()
                         png_data = self.plantuml_server.processes(fixed_code)
                     
