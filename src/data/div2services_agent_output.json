@@ -1,0 +1,132 @@
+{
+  "services": [
+    {
+      "name": "UserProfileService",
+      "service_type": "crud",
+      "description": "Handles user profiles including authentication, personal information, and preferences management.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Stores user profile data, credentials, and preferences.",
+        "required": true
+      }
+    },
+    {
+      "name": "AuthService",
+      "service_type": "auth",
+      "description": "Manages user authentication and authorization.",
+      "dependencies": [
+        {
+          "target_service": "UserProfileService",
+          "interaction_type": "sync_rest",
+          "description": "Fetches user credentials to validate login attempts."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "External authentication system integration (e.g., OAuth).",
+        "required": false
+      }
+    },
+    {
+      "name": "ChatBotService",
+      "service_type": "processing",
+      "description": "Processes user queries and generates responses using AI/ML models.",
+      "dependencies": [
+        {
+          "target_service": "SalesDataService",
+          "interaction_type": "sync_rest",
+          "description": "Fetches sales data required to generate responses."
+        },
+        {
+          "target_service": "NotificationService",
+          "interaction_type": "async_event",
+          "description": "Sends events for user response notifications."
+        }
+      ],
+      "database_requirements": {
+        "type": "document",
+        "description": "Stores conversational histories and context for processing.",
+        "required": true
+      }
+    },
+    {
+      "name": "SalesDataService",
+      "service_type": "database",
+      "description": "Manages sales data including product information, pricing, and promotions.",
+      "dependencies": [
+        {
+          "target_service": "ExternalSalesSystem",
+          "interaction_type": "async_message",
+          "description": "Synchronizes sales data with an external sales system."
+        }
+      ],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Stores comprehensive sales data, product catalogs, and pricing.",
+        "required": true
+      }
+    },
+    {
+      "name": "OrderingService",
+      "service_type": "crud",
+      "description": "Handles order processing, status tracking, and order history management.",
+      "dependencies": [
+        {
+          "target_service": "SalesDataService",
+          "interaction_type": "sync_rest",
+          "description": "Verifies product availability before processing an order."
+        },
+        {
+          "target_service": "PaymentService",
+          "interaction_type": "sync_rest",
+          "description": "Initiates payment for orders."
+        }
+      ],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Stores order details, statuses, and transaction histories.",
+        "required": true
+      }
+    },
+    {
+      "name": "PaymentService",
+      "service_type": "integration",
+      "description": "Processes payments and validates transactions with financial institutions.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "none",
+        "description": "Handles transaction processing through third-party systems.",
+        "required": false
+      }
+    },
+    {
+      "name": "NotificationService",
+      "service_type": "notification",
+      "description": "Sends notifications to users via different channels (e.g., email, SMS).",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "none",
+        "description": "Utilizes third-party communication APIs.",
+        "required": false
+      }
+    },
+    {
+      "name": "AnalyticsService",
+      "service_type": "processing",
+      "description": "Collects and analyzes interaction data to generate insights and reports.",
+      "dependencies": [
+        {
+          "target_service": "ChatBotService",
+          "interaction_type": "async_event",
+          "description": "Gathers data on user interactions for analytics."
+        }
+      ],
+      "database_requirements": {
+        "type": "big_data",
+        "description": "Stores and processes large volumes of interaction data for analytics.",
+        "required": true
+      }
+    }
+  ]
+}

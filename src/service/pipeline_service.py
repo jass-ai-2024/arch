@@ -1,14 +1,10 @@
-import os
 from core import prompts
 from repository import AgentGenerateRepository
 
 
-class Pipline:
-    def main(self) -> str:
-        with open("data" + os.sep + "input_ba.txt", "r") as f:
-            context = f.read()
-
-        for _, seq_description in prompts._dict["sections"].items():
+class Pipeline:
+    def run(self, context: str) -> str:
+        for seq_description in prompts._dict["sections"].values():
             agent = AgentGenerateRepository(
                 agent_name=seq_description["agent_name"],
                 instructions=seq_description["instructions"],
@@ -18,3 +14,8 @@ class Pipline:
             context += f"\n\n{seq_description['topic']}:\n{output}"
 
         return context
+
+if __name__ == "__main__":
+    pipeline = Pipeline()
+    output = pipeline.run(input())
+    print(output)

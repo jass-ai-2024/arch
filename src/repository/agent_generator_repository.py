@@ -1,7 +1,5 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List
-from swarm import Swarm, Agent
+from swarm import Agent, Swarm
+
 from core import openai_client
 
 
