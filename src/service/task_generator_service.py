@@ -4,6 +4,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import LLMChain
 from pydantic import BaseModel, Field
+from core import configs
 import json
 import logging
 import re
@@ -26,13 +27,15 @@ class ArchitectureTask(BaseModel):
 
 
 class TaskGeneratorService:
-    def __init__(self, openai_api_key: str):
+    def __init__(self, **kwargs):
         self.llm = ChatOpenAI(
-            temperature=0.7, model_name="gpt-4", openai_api_key=openai_api_key
+            temperature=0.7, model_name="gpt-4", openai_api_key=configs.GPT_TOKEN
         )
 
-    def _generate_thought_variants(self, prompt: str, n_variants: int = 3) -> List[str]:
-        """Генерирует несколько вариантов м��сли для заданного промпта"""
+    def _generate_thought_variants(
+        self, prompt: str, n_variants: str = "3"
+    ) -> List[str]:
+        """Генерирует несколько вариантов мысли для заданного промпта"""
         chain = LLMChain(
             llm=self.llm,
             prompt=PromptTemplate(
@@ -63,7 +66,7 @@ class TaskGeneratorService:
                 Варианты:
                 {variants}
                 
-                Выбери лучший вариант и ��бъясни почему.
+                Выбери лучший вариант и объясни почему.
                 """,
                 input_variables=["variants", "context"],
             ),
@@ -72,24 +75,58 @@ class TaskGeneratorService:
         result = chain.run(variants="\n".join(variants), context=context)
         return result.strip()
 
-    def decompose_architecture(self, description: str) -> List[ArchitectureTask]:
+    def _json_to_description(self, json_data: Dict) -> str:
+        """Преобразует JSON в текстовое описание"""
+        desc = f"Сервис: {json_data['name']}\n"
+        desc += f"Тип: {json_data['service_type']}\n"
+        desc += f"Описание: {json_data['description']}\n"
+
+        if json_data.get("dependencies"):
+            desc += "Зависимости:\n"
+            for dep in json_data["dependencies"]:
+                desc += f"- {dep['target_service']}: {dep['description']}\n"
+
+        if json_data.get("database_requirements"):
+            db = json_data["database_requirements"]
+            desc += f"База данных: {db['type']}\n"
+            desc += f"Описание БД: {db['description']}\n"
+
+        return desc
+
+    def decompose_architecture(self, description: Dict) -> List[ArchitectureTask]:
         """
-        Декомпозирует архитектурное описание на задачи используя Tree of Thoughts
+        Декомпозирует архитектурное описание на задачи используя Tree of Thoughts.
+        Принимает описание сервиса в формате JSON:
+        {
+            "name": "UserProfileService",
+            "service_type": "crud",
+            "description": "Handles user profiles including authentication, personal information, and preferences management.",
+            "dependencies": [],
+            "database_requirements": {
+                "type": "relational",
+                "description": "Stores user profile data, credentials, and preferences.",
+                "required": true
+            }
+        }
         """
+        # Преобразуем JSON в текстовое описание
+        description_text = self._json_to_description(description)
         # Шаг 1: Определение основных аспектов архитектуры
         root = ThoughtNode(
             content="Какие основные аспекты архитектуры нужно рассмотреть?",
             variants=self._generate_thought_variants(
-                "Определи основные аспекты архитектуры для анализа:\n" + description
+                "Определи основные аспекты архитектуры для анализа:\n"
+                + description_text
             ),
         )
-        root.selected_variant = self._evaluate_variants(root.variants, description)
+        root.selected_variant = self._evaluate_variants(root.variants, description_text)
 
         # Шаг 2: Для каждого аспекта определяем компоненты
         components_node = ThoughtNode(
             content="Какие компоненты нужны для каждого аспекта?",
             variants=self._generate_thought_variants(
-                f"Определи необходимые компоненты для реализации:\n{root.selected_variant}"
+                f"Определи необходимые компоненты для реализации:\n{root.selected_variant}",
+                n_variants="необходимое",
             ),
         )
         components_node.selected_variant = self._evaluate_variants(
@@ -170,7 +207,7 @@ class TaskGeneratorService:
             ):
                 raise ValueError(f"Отсутствуют необходимые поля в задаче: {task}")
 
-        return [ArchitectureTask(**task) for task in tasks_dict]
+        return [ArchitectureTask(**task) for task in tasks_dict], description_text
 
     def validate_tasks(
         self, tasks: List[ArchitectureTask], description: str

@@ -1,4 +1,5 @@
 import os
+import json
 from service.task_generator_service import TaskGeneratorService
 
 
@@ -8,23 +9,28 @@ def test_task_generator():
     if not api_key:
         raise ValueError("Необходимо установить переменную окружения OPENAI_API_KEY")
 
-    service = TaskGeneratorService(api_key)
+    service = TaskGeneratorService()
+    # Загрузка JSON файла
+    with open("data" + os.sep + "test.json", "r", encoding="utf-8") as f:
+        json_data = json.loads(f.read())
 
+    # Генерация задач на основе JSON описания
+    tasks, description_text = service.decompose_architecture(json_data)
     # Тестовое описание архитектуры
-    description = """
-    Необходимо разработать систему управления заказами для ресторана, которая будет включать:
-    - Управление меню и категориями блюд
-    - Прием и обработку заказов
-    - Управление столиками и бронированием
-    - Интеграцию с кухней
-    - Систему лояльности клиентов
-    """
+    # description = """
+    # Необходимо разработать систему управления заказами для ресторана, которая будет включать:
+    # - Управление меню и категориями блюд
+    # - Прием и обработку заказов
+    # - Управление столиками и бронированием
+    # - Интеграцию с кухней
+    # - Систему лояльности клиентов
+    # """
 
-    # Генерация задач
-    tasks = service.decompose_architecture(description)
+    # # Генерация задач
+    # tasks = service.decompose_architecture(description)
 
     # Валидация задач
-    validated_tasks = service.validate_tasks(tasks, description)
+    validated_tasks = service.validate_tasks(tasks, description_text)
 
     # Сохранение результатов в файл
     with open("architecture_tasks.txt", "w", encoding="utf-8") as f:
