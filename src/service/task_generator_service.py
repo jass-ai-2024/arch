@@ -20,14 +20,14 @@ class TaskGeneratorService:
     def generate_thoughts(
         self, service_description: str, n_candidates: int = 5
     ) -> List[str]:
-        self.logger.info(f"Генерация {n_candidates} начальных мыслей для сервиса")
-        self.logger.debug(f"Описание сервиса: {service_description}")
+        self.logger.info(f"Generating {n_candidates} initial thoughts for the service")
+        self.logger.debug(f"Service description: {service_description}")
 
         thought_prompt = PromptTemplate(
-            template="""На основе описания сервиса, сгенерируйте {n_candidates} различных подходов к декомпозиции задач.
-            Описание сервиса: {service_description}
+            template="""Based on the service description, generate {n_candidates} different approaches to task decomposition.
+            Service description: {service_description}
             
-            Выведите только список подходов, разделенных запятыми.""",
+            Output only a list of approaches, separated by commas.""",
             input_variables=["service_description", "n_candidates"],
         )
 
@@ -38,25 +38,25 @@ class TaskGeneratorService:
         )
 
         parsed_thoughts = self.output_parser.parse(thoughts.content)
-        self.logger.info(f"Сгенерировано {len(parsed_thoughts)} мыслей")
+        self.logger.info(f"Generated {len(parsed_thoughts)} thoughts")
         for i, thought in enumerate(parsed_thoughts, 1):
-            self.logger.debug(f"Мысль {i}: {thought}")
+            self.logger.debug(f"Thought {i}: {thought}")
 
         return parsed_thoughts
 
     def evaluate_thought(self, thought: str, service_description: str) -> str:
-        self.logger.info(f"Оценка мысли: {thought[:50]}...")
+        self.logger.info(f"Evaluating thought: {thought[:50]}...")
 
         eval_prompt = PromptTemplate(
-            template="""Оцените следующий подход к декомпозиции задач:
-            Описание сервиса: {service_description}
-            Подход: {thought}
+            template="""Evaluate the following task decomposition approach:
+            Service description: {service_description}
+            Approach: {thought}
             
-            Оцените как: "конечно" (если подход определенно приведет к хорошей декомпозиции),
-            "возможно" (если подход может привести к хорошей декомпозиции),
-            "невозможно" (если подход точно не подходит).
+            Rate as: "certainly" (if the approach will definitely lead to good decomposition),
+            "possibly" (if the approach might lead to good decomposition),
+            "impossible" (if the approach is definitely not suitable).
             
-            Выведите только одно слово-оценку.""",
+            Output only one evaluation word.""",
             input_variables=["thought", "service_description"],
         )
 
@@ -65,45 +65,45 @@ class TaskGeneratorService:
         )
 
         result = evaluation.content.strip().lower()
-        self.logger.info(f"Результат оценки: {result}")
+        self.logger.info(f"Evaluation result: {result}")
         return result
 
     def generate_tasks_from_thought(
         self, thought: str, service_description: str
     ) -> List[Dict]:
-        self.logger.info("Генерация конкретных задач на основе выбранного подхода")
-        self.logger.debug(f"Используемый подход: {thought}")
+        self.logger.info("Generating specific tasks based on the chosen approach")
+        self.logger.debug(f"Using approach: {thought}")
 
         task_prompt = PromptTemplate(
-            template="""На основе выбранного подхода сгенерируйте список конкретных технических задач для разработчиков.
-            Описание сервиса: {service_description}
-            Подход: {thought}
+            template="""Based on the chosen approach, generate a list of specific technical tasks for developers.
+            Service description: {service_description}
+            Approach: {thought}
             
-            Выведите список задач в формате JSON. Каждая задача должна содержать следующие поля:
+            Output the list of tasks in JSON format. Each task should contain the following fields:
             [
                 {{
-                    "id": "уникальный идентификатор задачи",
-                    "title": "Краткое техническое название задачи, начинающееся с глагола (Реализовать, Создать, Настроить и т.д.)",
-                    "description": "Подробное техническое описание задачи, включающее:
-                        - Конкретные технические требования с указанием методов, классов, интерфейсов
-                        - Точный список используемых технологий, библиотек и их версий
-                        - Структуры входных и выходных данных с примерами
-                        - Необходимые API endpoints с форматами запросов/ответов
-                        - Требования к производительности и масштабируемости
-                        - Конкретные критерии приемки и тестовые сценарии",
-                    "estimate_hours": "Оценка трудозатрат в часах",
-                    "dependencies": ["id других задач, от которых зависит эта задача"],
-                    "priority": "Приоритет задачи (1 - высший, 3 - низший)",
-                    "skills_required": ["список необходимых технических навыков"]
+                    "id": "unique task identifier",
+                    "title": "Brief technical task name starting with a verb (Implement, Create, Configure, etc.)",
+                    "description": "Detailed technical task description including:
+                        - Specific technical requirements with methods, classes, interfaces
+                        - Exact list of technologies, libraries and their versions
+                        - Input/output data structures with examples
+                        - Required API endpoints with request/response formats
+                        - Performance and scalability requirements
+                        - Specific acceptance criteria and test scenarios",
+                    "estimate_hours": "Effort estimate in hours",
+                    "dependencies": ["ids of other tasks this task depends on"],
+                    "priority": "Task priority (1 - highest, 3 - lowest)",
+                    "skills_required": ["list of required technical skills"]
                 }}
             ]
             
-            Убедитесь, что:
-            1. JSON валиден и не содержит переносов строк внутри значений полей
-            2. Все задачи конкретны, измеримы и имеют четкие критерии завершения
-            3. Каждая задача независима и может быть взята в работу отдельным разработчиком
-            4. Задачи не дублируют функциональность друг друга
-            5. Описания содержат конкретные технические детали, а не общие формулировки""",
+            Ensure that:
+            1. JSON is valid and contains no line breaks within field values
+            2. All tasks are specific, measurable, and have clear completion criteria
+            3. Each task is independent and can be taken by a separate developer
+            4. Tasks do not duplicate functionality
+            5. Descriptions contain specific technical details, not general statements""",
             input_variables=["thought", "service_description"],
         )
 
@@ -114,58 +114,58 @@ class TaskGeneratorService:
         try:
             parsed_tasks = json.loads(tasks.content)
         except json.JSONDecodeError as e:
-            self.logger.error(f"Ошибка парсинга JSON: {e}")
-            self.logger.debug(f"Полученный контент: {tasks.content}")
+            self.logger.error(f"JSON parsing error: {e}")
+            self.logger.debug(f"Received content: {tasks.content}")
             return []
 
-        self.logger.info(f"Сгенерировано {len(parsed_tasks)} задач")
+        self.logger.info(f"Generated {len(parsed_tasks)} tasks")
         for task in parsed_tasks:
-            self.logger.debug(f"Задача: {task['title']}")
+            self.logger.debug(f"Task: {task['title']}")
 
         return parsed_tasks
 
     def generate_backlog(self, service_description: str) -> List[Dict]:
-        self.logger.info("Начало генерации беклога задач")
+        self.logger.info("Starting task backlog generation")
 
-        # Шаг 1: Генерация начальных мыслей
-        self.logger.info("Шаг 1: Генерация начальных мыслей")
+        # Step 1: Generate initial thoughts
+        self.logger.info("Step 1: Generating initial thoughts")
         thoughts = self.generate_thoughts(service_description)
 
-        # Шаг 2: BFS для поиска лучшего подхода
-        self.logger.info("Шаг 2: Поиск лучшего подхода через BFS")
+        # Step 2: BFS to find the best approach
+        self.logger.info("Step 2: Finding the best approach through BFS")
         best_thought = None
         best_evaluation_count = 0
 
         for i, thought in enumerate(thoughts, 1):
-            self.logger.info(f"Оценка мысли {i}/{len(thoughts)}")
+            self.logger.info(f"Evaluating thought {i}/{len(thoughts)}")
             certainly_count = 0
 
             for attempt in range(3):
-                self.logger.debug(f"Попытка оценки {attempt + 1}/3")
+                self.logger.debug(f"Attempt {attempt + 1}/3")
                 evaluation = self.evaluate_thought(thought, service_description)
-                if evaluation == "конечно":
+                if evaluation == "certainly":
                     certainly_count += 1
 
-            self.logger.info(f"Мысль получила {certainly_count} оценок 'конечно'")
+            self.logger.info(f"Thought received {certainly_count} 'certainly' evaluations")
 
             if certainly_count > best_evaluation_count:
                 best_evaluation_count = certainly_count
                 best_thought = thought
                 self.logger.info(
-                    f"Найден новый лучший подход с {certainly_count} положительными оценками"
+                    f"Found a new best approach with {certainly_count} positive evaluations"
                 )
 
-        # Шаг 3: Генерация конкретных задач
-        self.logger.info("Шаг 3: Генерация конкретных задач")
+        # Step 3: Generate specific tasks
+        self.logger.info("Step 3: Generating specific tasks")
         if best_thought:
-            self.logger.info("Генерация задач на основе лучшего подхода")
+            self.logger.info("Generating tasks based on the best approach")
             tasks = self.generate_tasks_from_thought(best_thought, service_description)
 
-            # Удаление дублирующихся задач по id
+            # Remove duplicate tasks by id
             unique_tasks = {task["id"]: task for task in tasks}
             tasks = list(unique_tasks.values())
 
-            # Преобразование задач в список словарей
+            # Convert tasks to list of dictionaries
             tasks_dicts = []
             for task in tasks:
                 task_dict = {
@@ -179,11 +179,11 @@ class TaskGeneratorService:
                 tasks_dicts.append(task_dict)
             tasks = tasks_dicts
 
-            self.logger.info(f"Успешно сгенерировано {len(tasks)} уникальных задач")
+            self.logger.info(f"Successfully generated {len(tasks)} unique tasks")
 
             return tasks
 
-        self.logger.warning("Не найдено подходящего подхода для генерации задач")
+        self.logger.warning("No suitable approach found for task generation")
         return []
 
 
