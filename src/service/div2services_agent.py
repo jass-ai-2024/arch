@@ -1,33 +1,10 @@
-import functools
 import json
 
-import tiktoken
 from openai import OpenAI
 
+from src.service.task_generator_service import TaskGeneratorService
+
 client = OpenAI()
-
-
-def count_tokens(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        encoding = tiktoken.encoding_for_model("gpt-4o")
-
-        system_prompt = args[0]
-        user_message = args[1]
-        input_tokens = len(encoding.encode(system_prompt)) + len(
-            encoding.encode(user_message)
-        )
-
-        result = func(*args, **kwargs)
-
-        output_tokens = len(encoding.encode(result))
-
-        print(
-            f"Tokens used: input={input_tokens}, output={output_tokens}, total={input_tokens + output_tokens}"
-        )
-        return result
-
-    return wrapper
 
 
 def get_agent_response(system_prompt, user_message):
@@ -116,4 +93,12 @@ def get_service_decomposition(project_description: str) -> dict:
 
 if __name__ == "__main__":
     project_desc = input()
-    print(json.dumps(get_service_decomposition(project_desc), indent=2))
+    # print(json.dumps(get_service_decomposition(project_desc), indent=2))
+    services_data_json = get_service_decomposition(project_desc)
+    for ind, service_data in enumerate(services_data_json["services"]):
+        service = TaskGeneratorService()
+        tasks = service.generate_backlog(
+            json.dumps(service_data, indent=2, ensure_ascii=False)
+        )
+        services_data_json["services"][ind]["low_level_tasks"] = tasks
+    print(json.dumps(services_data_json, indent=2, ensure_ascii=False))

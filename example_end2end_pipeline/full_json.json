@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/romansim/Проекты/MyProjects/arch/src/add_low_level_task2json.py", line 89, in <module>
+    result = create_services_json(input_data, tasks_data)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/romansim/Проекты/MyProjects/arch/src/add_low_level_task2json.py", line 67, in create_services_json
+    result = merge_tasks_with_services(result, tasks_json)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/romansim/Проекты/MyProjects/arch/src/add_low_level_task2json.py", line 27, in merge_tasks_with_services
+    if service["name"] in service_tasks:
+       ~~~~~~~^^^^^^^^
+KeyError: 'name'

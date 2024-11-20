@@ -1,6 +1,6 @@
 from swarm import Agent, Swarm
 
-from core import openai_client
+from src.core import openai_client
 
 
 class AgentGenerateRepository:

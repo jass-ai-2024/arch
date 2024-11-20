@@ -1,0 +1,58 @@
+{
+  "services": [
+    {
+      "name": "PaphosFrontend",
+      "service_type": "frontend",
+      "description": "This service is responsible for rendering the front-end interface where the word 'Paphos' is displayed in the center of the screen. It handles all user interactions and ensures the UI is correctly displayed.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "",
+        "description": "No database is required as the front-end just needs to display static content.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "task1",
+          "title": "Design Front-end Interface",
+          "description": "Design a minimalist user interface where the word 'Paphos' is displayed in the center of the screen. Use HTML5 and CSS3 for structure and styling, respectively. The design should be responsive and compatible with all modern web browsers. No specific data structures or API endpoints are required for this task. The design should load quickly and be scalable to different screen sizes.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task2",
+          "title": "Implement User Interactions",
+          "description": "Implement user interactions using JavaScript. When a user clicks on the word 'Paphos', it should change color. Use the latest version of JavaScript and ensure code is clean and efficient. No specific data structures or API endpoints are required for this task. The interaction should be smooth and not cause any performance issues.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task3",
+          "title": "Test Front-end Interface",
+          "description": "Test the front-end interface using Jest. Ensure that the word 'Paphos' is displayed in the center of the screen on all devices and browsers. When a user clicks on the word, it should change color. Use the latest version of Jest and write comprehensive test cases. No specific data structures or API endpoints are required for this task. The tests should cover all possible scenarios and edge cases.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1",
+            "task2"
+          ]
+        },
+        {
+          "id": "task4",
+          "title": "Deploy Front-end Interface",
+          "description": "Deploy the front-end interface to a web server using Docker. The deployment process should be documented and repeatable. Use the latest version of Docker and ensure that the server is secure and scalable. No specific data structures or API endpoints are required for this task. The interface should be accessible from anywhere and load quickly.",
+          "priority": "3",
+          "estimate": 0,
+          "dependencies": [
+            "task1",
+            "task2",
+            "task3"
+          ]
+        }
+      ]
+    }
+  ]
+}

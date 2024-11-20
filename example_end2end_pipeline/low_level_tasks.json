@@ -1,16 +1,16 @@
 [
   {
     "id": "1",
-    "title": "Создать структуру проекта",
-    "description": "Создать структуру проекта на основе выбранного стека технологий (React). Установить и настроить необходимые пакеты и библиотеки. В структуре проекта должны быть следующие папки: 'components' для размещения компонентов приложения, 'assets' для хранения статических файлов (изображений, стилей и т.д.), 'services' для хранения логики работы с API и других вспомогательных функций.",
+    "title": "Design User Interface for 'PaphosFrontend'",
+    "description": "Create the user interface for the 'PaphosFrontend' service. The main requirement is to display the word 'Paphos' at the center of the screen. Use HTML5 and CSS3 for the design. The interface must be responsive and work well on different screen sizes. No specific performance or scalability requirements are needed as the display is static. Acceptance criteria: The word 'Paphos' is correctly displayed at the center of the screen on different devices and screen sizes.",
     "priority": "1",
     "estimate": 0,
     "dependencies": []
   },
   {
     "id": "2",
-    "title": "Реализовать компонент 'App'",
-    "description": "Создать компонент 'App', который будет корневым компонентом приложения. Внутри компонента 'App' должен рендериться компонент 'MainScreen'. Данный компонент должен быть функциональным и написан на React. При разработке следует использовать React hooks.",
+    "title": "Implement 'PaphosFrontend' service",
+    "description": "Implement 'PaphosFrontend' service using JavaScript. The service should display static HTML created in task #1. No database is required. The service should be implemented as a simple HTTP server that serves static files. It should use Node.js and Express.js. Acceptance criteria: The service serves the static HTML files correctly and the word 'Paphos' is displayed at the center of the screen when the service is accessed from a web browser.",
     "priority": "1",
     "estimate": 0,
     "dependencies": [
@@ -19,32 +19,12 @@
   },
   {
     "id": "3",
-    "title": "Реализовать компонент 'MainScreen'",
-    "description": "Создать компонент 'MainScreen', который будет отображать слово 'Paphos' по центру экрана. Для стилизации использовать CSS-in-JS. Компонент должен быть адаптивным и корректно отображаться на разных устройствах и разрешениях экрана.",
+    "title": "Test 'PaphosFrontend' service",
+    "description": "Perform testing on the 'PaphosFrontend' service to ensure it meets the acceptance criteria outlined in tasks #1 and #2. Testing should include functional testing (ensuring the word 'Paphos' is displayed at the center of the screen) and compatibility testing (ensuring the display is correct on different devices and screen sizes). Use Jest for testing.",
     "priority": "1",
     "estimate": 0,
     "dependencies": [
       "2"
-    ]
-  },
-  {
-    "id": "4",
-    "title": "Протестировать работу приложения",
-    "description": "Провести тестирование приложения. Проверить корректность отображения компонента 'MainScreen' на разных устройствах и разрешениях экрана. Для тестирования использовать библиотеку Jest.",
-    "priority": "1",
-    "estimate": 0,
-    "dependencies": [
-      "3"
-    ]
-  },
-  {
-    "id": "5",
-    "title": "Оптимизировать производительность приложения",
-    "description": "Провести аудит производительности приложения с использованием инструментов разработчика Google Chrome (вкладка 'Performance'). Выявить возможные проблемы и устранить их. Убедиться, что приложение работает стабильно и без задержек.",
-    "priority": "2",
-    "estimate": 0,
-    "dependencies": [
-      "4"
     ]
   }
 ]

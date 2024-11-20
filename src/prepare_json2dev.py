@@ -38,7 +38,7 @@ def create_services_json(input_json):
 
 
 if __name__ == "__main__":
-    with open("data/div2services_agent_output.json", "r") as file:
-        input_data = json.load(file)
-        result = create_services_json(input_data)
-        print(json.dumps(result, indent=2))
+	import sys
+	input_data = json.loads(sys.stdin.read())
+	result = create_services_json(input_data)
+	print(json.dumps(result, indent=2))

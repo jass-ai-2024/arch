@@ -15,13 +15,13 @@ class TaskGeneratorService:
     def __init__(self, model_name: str = "gpt-4"):
         self.llm = ChatOpenAI(model_name=model_name)
         self.output_parser = CommaSeparatedListOutputParser()
-        self.logger = logging.getLogger(__name__)
+        # self.logger = logging.getLogger(__name__)
 
     def generate_thoughts(
         self, service_description: str, n_candidates: int = 5
     ) -> List[str]:
-        self.logger.info(f"Generating {n_candidates} initial thoughts for the service")
-        self.logger.debug(f"Service description: {service_description}")
+        # self.logger.info(f"Generating {n_candidates} initial thoughts for the service")
+        # self.logger.debug(f"Service description: {service_description}")
 
         thought_prompt = PromptTemplate(
             template="""Based on the service description, generate {n_candidates} different approaches to task decomposition.
@@ -38,14 +38,14 @@ class TaskGeneratorService:
         )
 
         parsed_thoughts = self.output_parser.parse(thoughts.content)
-        self.logger.info(f"Generated {len(parsed_thoughts)} thoughts")
-        for i, thought in enumerate(parsed_thoughts, 1):
-            self.logger.debug(f"Thought {i}: {thought}")
+        # self.logger.info(f"Generated {len(parsed_thoughts)} thoughts")
+        # for i, thought in enumerate(parsed_thoughts, 1):
+            # self.logger.debug(f"Thought {i}: {thought}")
 
         return parsed_thoughts
 
     def evaluate_thought(self, thought: str, service_description: str) -> str:
-        self.logger.info(f"Evaluating thought: {thought[:50]}...")
+        # self.logger.info(f"Evaluating thought: {thought[:50]}...")
 
         eval_prompt = PromptTemplate(
             template="""Evaluate the following task decomposition approach:
@@ -65,14 +65,14 @@ class TaskGeneratorService:
         )
 
         result = evaluation.content.strip().lower()
-        self.logger.info(f"Evaluation result: {result}")
+        # self.logger.info(f"Evaluation result: {result}")
         return result
 
     def generate_tasks_from_thought(
         self, thought: str, service_description: str
     ) -> List[Dict]:
-        self.logger.info("Generating specific tasks based on the chosen approach")
-        self.logger.debug(f"Using approach: {thought}")
+        # self.logger.info("Generating specific tasks based on the chosen approach")
+        # self.logger.debug(f"Using approach: {thought}")
 
         task_prompt = PromptTemplate(
             template="""Based on the chosen approach, generate a list of specific technical tasks for developers.
@@ -114,51 +114,51 @@ class TaskGeneratorService:
         try:
             parsed_tasks = json.loads(tasks.content)
         except json.JSONDecodeError as e:
-            self.logger.error(f"JSON parsing error: {e}")
-            self.logger.debug(f"Received content: {tasks.content}")
+            # self.logger.error(f"JSON parsing error: {e}")
+            # self.logger.debug(f"Received content: {tasks.content}")
             return []
 
-        self.logger.info(f"Generated {len(parsed_tasks)} tasks")
-        for task in parsed_tasks:
-            self.logger.debug(f"Task: {task['title']}")
+        # self.logger.info(f"Generated {len(parsed_tasks)} tasks")
+        # for task in parsed_tasks:
+            # self.logger.debug(f"Task: {task['title']}")
 
         return parsed_tasks
 
     def generate_backlog(self, service_description: str) -> List[Dict]:
-        self.logger.info("Starting task backlog generation")
+        # self.logger.info("Starting task backlog generation")
 
         # Step 1: Generate initial thoughts
-        self.logger.info("Step 1: Generating initial thoughts")
+        # self.logger.info("Step 1: Generating initial thoughts")
         thoughts = self.generate_thoughts(service_description)
 
         # Step 2: BFS to find the best approach
-        self.logger.info("Step 2: Finding the best approach through BFS")
+        # self.logger.info("Step 2: Finding the best approach through BFS")
         best_thought = None
         best_evaluation_count = 0
 
         for i, thought in enumerate(thoughts, 1):
-            self.logger.info(f"Evaluating thought {i}/{len(thoughts)}")
+            # self.logger.info(f"Evaluating thought {i}/{len(thoughts)}")
             certainly_count = 0
 
             for attempt in range(3):
-                self.logger.debug(f"Attempt {attempt + 1}/3")
+                # self.logger.debug(f"Attempt {attempt + 1}/3")
                 evaluation = self.evaluate_thought(thought, service_description)
                 if evaluation == "certainly":
                     certainly_count += 1
 
-            self.logger.info(f"Thought received {certainly_count} 'certainly' evaluations")
+            # self.logger.info(f"Thought received {certainly_count} 'certainly' evaluations")
 
             if certainly_count > best_evaluation_count:
                 best_evaluation_count = certainly_count
                 best_thought = thought
-                self.logger.info(
-                    f"Found a new best approach with {certainly_count} positive evaluations"
-                )
+                # self.logger.info(
+                    # f"Found a new best approach with {certainly_count} positive evaluations"
+                # )
 
         # Step 3: Generate specific tasks
-        self.logger.info("Step 3: Generating specific tasks")
+        # self.logger.info("Step 3: Generating specific tasks")
         if best_thought:
-            self.logger.info("Generating tasks based on the best approach")
+            # self.logger.info("Generating tasks based on the best approach")
             tasks = self.generate_tasks_from_thought(best_thought, service_description)
 
             # Remove duplicate tasks by id
@@ -179,11 +179,11 @@ class TaskGeneratorService:
                 tasks_dicts.append(task_dict)
             tasks = tasks_dicts
 
-            self.logger.info(f"Successfully generated {len(tasks)} unique tasks")
+            # self.logger.info(f"Successfully generated {len(tasks)} unique tasks")
 
             return tasks
 
-        self.logger.warning("No suitable approach found for task generation")
+        # self.logger.warning("No suitable approach found for task generation")
         return []
 
 
