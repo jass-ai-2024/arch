@@ -1,0 +1,134 @@
+# Technical Specification: Iris Classification Service
+
+## 1. General Description
+Develop a web service for iris type classification based on its characteristics. The service should consist of a frontend for data input and result display, and a backend with an ML model for making predictions.
+
+## 2. System Architecture
+- Frontend: React.js application
+- Backend: FastAPI service with ML model
+- Communication: REST API
+
+## 3. Functional Requirements
+
+### 3.1 Frontend (IrisClassifierFrontend)
+#### Interface Components:
+- Input form with 4 numeric fields:
+  - Sepal Length (cm)
+  - Sepal Width (cm)
+  - Petal Length (cm)
+  - Petal Width (cm)
+- "Predict" button
+- Results display area
+- Visual validation of input data
+
+#### UI Requirements:
+- Responsive design
+- Clear field labels
+- Loading indication
+- Error handling and display
+- Input validation (floating-point numbers only)
+
+### 3.2 Backend (IrisClassifierBackend)
+#### API Endpoints:
+```
+POST /api/v1/predict
+- Input: JSON with 4 parameters (sepal_length, sepal_width, petal_length, petal_width)
+- Output: JSON with predicted iris class and probabilities
+```
+
+#### ML Components:
+- Pre-trained classification model (RandomForest or similar)
+- Input data validation
+- Data preprocessing before prediction
+
+## 4. Non-functional Requirements
+
+### 4.1 Performance
+- API response time: < 200ms
+- Support for up to 100 concurrent requests
+
+### 4.2 Security
+- Basic CSRF protection
+- Input data validation
+- API rate limiting
+
+### 4.3 Reliability
+- Error handling on both sides
+- Operation logging
+- Service status monitoring
+
+## 5. Technical Stack
+
+### 5.1 Frontend
+- React.js
+- TypeScript
+- Axios for HTTP requests
+- Material-UI or Tailwind CSS for components
+- Jest for testing
+
+### 5.2 Backend
+- Python 3.9+
+- FastAPI
+- scikit-learn
+- pandas
+- pytest for testing
+- Docker for containerization
+
+## 6. Development Stages
+
+### 6.1 Preparation Stage
+1. ML model preparation and training
+2. Repository creation and setup
+3. Development environment setup
+
+### 6.2 Backend Development
+1. FastAPI application implementation
+2. ML model integration
+3. API endpoint development
+4. Test writing
+5. API documentation
+
+### 6.3 Frontend Development
+1. React application creation
+2. UI component development
+3. API integration
+4. Validation implementation
+5. Test writing
+
+### 6.4 Deployment
+1. Docker container preparation
+2. CI/CD setup
+3. Service deployment
+
+## 7. Acceptance Criteria
+
+### 7.1 Frontend
+- Correct validation of all input fields
+- Proper display on various devices
+- Correct error handling and display
+- Successful completion of all unit tests
+
+### 7.2 Backend
+- Correct API endpoint operation
+- Input data validation
+- Prediction accuracy of at least 90%
+- Successful completion of all unit tests
+- Response time within requirements
+
+## 8. Documentation
+- API documentation (Swagger/OpenAPI)
+- Deployment instructions
+- Architecture description
+- User manual
+
+## 9. Support and Maintenance
+- Service health monitoring
+- Performance metrics collection
+- Dependency updates
+- User support
+
+## 10. Additional Requirements
+- API versioning
+- CORS configuration
+- Edge case handling
+- User action logging

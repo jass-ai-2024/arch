@@ -1,0 +1,426 @@
+{
+  "services": [
+    {
+      "name": "IrisDataStorageService",
+      "service_type": "database",
+      "description": "Handles the storage and retrieval of Iris dataset records.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Requires a database to store Iris dataset records with support for CRUD operations.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "task1",
+          "title": "Configure database",
+          "description": "Set up a relational database that can support the storage and retrieval of Iris dataset records. This should have appropriate tables and relationships to store the data. Ensure that the database is scalable to handle large amounts of data and that it has high performance, particularly for CRUD operations. The database should be able to handle concurrent requests without failing. Use PostgreSQL version 12.4 for the database setup. The input for this task is the Iris dataset and the output should be a fully configured database.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task2",
+          "title": "Implement CREATE method",
+          "description": "Create a method that can store Iris dataset records in the database. This method should be able to handle bulk inserts efficiently. Use Python's psycopg2 library version 2.8.6 for interacting with the database. The input will be a list of Iris records and the output should be a confirmation of successful storage. The API endpoint for this method will be POST /iris. The request format should be JSON and the response format should also be JSON indicating the success or failure of the operation. The performance requirement for this method is to be able to handle 1000 records per minute. The acceptance criteria is that all data should be accurately stored in the database without any loss.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task3",
+          "title": "Implement READ method",
+          "description": "Create a method that can retrieve Iris dataset records from the database. This should support retrieving records based on different criteria. Use Python's psycopg2 library version 2.8.6 for interacting with the database. The input will be the criteria for retrieval and the output should be the matching Iris records. The API endpoint for this method will be GET /iris. The request format should be JSON and the response format should also be JSON containing the retrieved records. The performance requirement for this method is to retrieve 1000 records in less than a second. The acceptance criteria is that the returned data should match the query criteria exactly.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task4",
+          "title": "Implement UPDATE method",
+          "description": "Create a method that can update Iris dataset records in the database. This should support updating multiple records at once. Use Python's psycopg2 library version 2.8.6 for interacting with the database. The input will be a list of Iris records with their updated values and the output should be a confirmation of successful update. The API endpoint for this method will be PUT /iris. The request format should be JSON and the response format should also be JSON indicating the success or failure of the operation. The performance requirement for this method is to be able to update 1000 records per minute. The acceptance criteria is that all data should be accurately updated in the database without any loss.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task5",
+          "title": "Implement DELETE method",
+          "description": "Create a method that can delete Iris dataset records from the database. This should support deleting multiple records at once. Use Python's psycopg2 library version 2.8.6 for interacting with the database. The input will be a list of Iris record ids and the output should be a confirmation of successful deletion. The API endpoint for this method will be DELETE /iris. The request format should be JSON and the response format should also be JSON indicating the success or failure of the operation. The performance requirement for this method is to be able to delete 1000 records per minute. The acceptance criteria is that all specified data should be completely removed from the database.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IrisDataCRUDService",
+      "service_type": "crud",
+      "description": "Provides CRUD operations for managing Iris dataset records.",
+      "dependencies": [
+        {
+          "target_service": "IrisDataStorageService",
+          "interaction_type": "sync_rest",
+          "description": "Interacts with the storage service to perform CRUD operations on Iris data."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "No direct database; relies on IrisDataStorageService.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "task-1",
+          "title": "Implement IrisDataCRUDService",
+          "description": "Create a service that provides CRUD operations for managing Iris dataset records. The service should support the following operations: Create, Read, Update, Delete. The service should interact with IrisDataStorageService to perform these operations.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task-2",
+          "title": "Configure interaction with IrisDataStorageService",
+          "description": "Configure the IrisDataCRUDService to interact with the IrisDataStorageService via synchronous RESTful API calls. The IrisDataCRUDService should not interact with any database directly. It should rely on the IrisDataStorageService to perform all data storage operations.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task-1"
+          ]
+        },
+        {
+          "id": "task-3",
+          "title": "Implement Create method",
+          "description": "Implement the Create method in the IrisDataCRUDService. This method should accept a JSON object representing a record in the Iris dataset and pass it to the IrisDataStorageService for storage. The response from the IrisDataStorageService should be returned to the client.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task-2"
+          ]
+        },
+        {
+          "id": "task-4",
+          "title": "Implement Read method",
+          "description": "Implement the Read method in the IrisDataCRUDService. This method should accept a record ID and retrieve the corresponding record from the IrisDataStorageService. The retrieved record should be returned to the client as a JSON object.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task-2"
+          ]
+        },
+        {
+          "id": "task-5",
+          "title": "Implement Update method",
+          "description": "Implement the Update method in the IrisDataCRUDService. This method should accept a JSON object representing a modified record in the Iris dataset and pass it to the IrisDataStorageService to update the corresponding record. The response from the IrisDataStorageService should be returned to the client.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task-2"
+          ]
+        },
+        {
+          "id": "task-6",
+          "title": "Implement Delete method",
+          "description": "Implement the Delete method in the IrisDataCRUDService. This method should accept a record ID and instruct the IrisDataStorageService to delete the corresponding record. The response from the IrisDataStorageService should be returned to the client.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task-2"
+          ]
+        },
+        {
+          "id": "task-7",
+          "title": "Write unit tests for IrisDataCRUDService",
+          "description": "Write unit tests for the IrisDataCRUDService to verify that it behaves as expected. The tests should cover all CRUD operations and should mock the IrisDataStorageService to isolate the IrisDataCRUDService for testing.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task-3",
+            "task-4",
+            "task-5",
+            "task-6"
+          ]
+        },
+        {
+          "id": "task-8",
+          "title": "Conduct performance testing of IrisDataCRUDService",
+          "description": "Conduct performance testing of the IrisDataCRUDService to ensure that it can handle a high volume of requests. The performance tests should simulate a large number of simultaneous requests to the service and measure its response time and error rate.",
+          "priority": "3",
+          "estimate": 0,
+          "dependencies": [
+            "task-7"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IrisClassificationService",
+      "service_type": "processing",
+      "description": "Contains the logic to classify Iris samples using a machine learning model.",
+      "dependencies": [
+        {
+          "target_service": "IrisDataStorageService",
+          "interaction_type": "sync_rest",
+          "description": "Fetches Iris data required for training or classification."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "No direct database; performs in-memory processing.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "1",
+          "title": "Implement Iris Data Fetching",
+          "description": "Implement the functionality to fetch Iris data from the IrisDataStorageService using a sync_rest interaction. The fetched data will be used for training or classification. The data should be fetched in JSON format. The fetched data should be processed in-memory as there are no direct database requirements for this service. Use Python requests library for handling REST API calls. The API endpoint should be '/fetchIrisData'. The request will be a GET request with no request body. The response should be a JSON array of Iris data objects. Each Iris data object should contain attributes: sepal_length, sepal_width, petal_length, petal_width, species.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "2",
+          "title": "Implement Iris Classification Logic",
+          "description": "Implement the logic to classify Iris samples using a machine learning model. Use scikit-learn's KNeighborsClassifier model for classification. The model should be trained using the fetched Iris data. The classification logic should accept an Iris sample as input and output the predicted species. The input Iris sample should be a JSON object with attributes: sepal_length, sepal_width, petal_length, petal_width. The output should be a JSON object with attributes: predicted_species.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "1"
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Implement API Endpoint for Iris Classification",
+          "description": "Implement an API endpoint for Iris classification. The API endpoint should be '/classifyIris'. The request will be a POST request with an Iris sample as the request body. The response should be a JSON object with the predicted species. Use Flask for handling API requests and responses. Handle potential errors and return appropriate HTTP status codes and error messages.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "UserAuthenticationService",
+      "service_type": "auth",
+      "description": "Manages user authentication and provides secure access to the Iris system APIs.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "non-relational",
+        "description": "Stores user credentials and authentication tokens.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "task1",
+          "title": "Implement User Credentials Database",
+          "description": "Create a non-relational database using MongoDB to store user credentials and authentication tokens. The database should contain fields for user ID, username, hashed password, and authentication tokens. The user ID should be a unique identifier. Use bcrypt for password hashing and JWT for authentication tokens. The database should be capable of handling high volumes of user data and be scalable for future growth.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task2",
+          "title": "Create User Registration API",
+          "description": "Develop a RESTful API endpoint for user registration that accepts a POST request with username and password in the JSON body. The API should validate the input, hash the password using bcrypt, generate a user ID, and store the new user data in the MongoDB database. The API should return a JSON response with the user ID and a status message. The API should handle errors appropriately and return corresponding HTTP status codes.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task3",
+          "title": "Implement User Login API",
+          "description": "Create a RESTful API endpoint for user login that accepts a POST request with username and password in the JSON body. The API should validate the credentials, compare the hashed password with the one stored in the database, generate a JWT authentication token, and return it in a JSON response. The API should handle errors appropriately and return corresponding HTTP status codes.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task1",
+            "task2"
+          ]
+        },
+        {
+          "id": "task4",
+          "title": "Develop User Authentication Middleware",
+          "description": "Write a middleware function in Node.js that checks the JWT authentication token in the request header. The middleware should verify the token, extract the user ID, and attach it to the request object. If the token is invalid or expired, the middleware should return a 401 Unauthorized HTTP status code. The middleware should be used in all API endpoints that require user authentication.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task3"
+          ]
+        },
+        {
+          "id": "task5",
+          "title": "Test User Authentication Service",
+          "description": "Write unit tests for the User Authentication Service using Jest and Supertest. The tests should cover all API endpoints and the authentication middleware. They should test for successful scenarios as well as error cases. The tests should ensure that the service correctly validates input, stores and retrieves user data, generates and verifies JWT tokens, and handles errors.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1",
+            "task2",
+            "task3",
+            "task4"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IrisAPIGatewayService",
+      "service_type": "gateway",
+      "description": "Serves as the API gateway, routing requests to appropriate microservices such as CRUD and classification services.",
+      "dependencies": [
+        {
+          "target_service": "UserAuthenticationService",
+          "interaction_type": "sync_rest",
+          "description": "Verifies user identity and permissions before routing requests."
+        },
+        {
+          "target_service": "IrisDataCRUDService",
+          "interaction_type": "sync_rest",
+          "description": "Routes requests for managing Iris data."
+        },
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "sync_rest",
+          "description": "Routes requests for Iris classification tasks."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "Acts as a routing service, no data storage needed.",
+        "required": false
+      },
+      "low_level_tasks": []
+    },
+    {
+      "name": "NotificationService",
+      "service_type": "notification",
+      "description": "Notifies users about the classification results or any system alerts.",
+      "dependencies": [
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "async_event",
+          "description": "Listens for completed classification events to notify users."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "Temporary in-memory storage for notification processing.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "1",
+          "title": "Implement NotificationService",
+          "description": "Develop the NotificationService which notifies users about the classification results or any system alerts. This service does not require a database, and should use temporary in-memory storage for notification processing. This service must listen for completed classification events from the IrisClassificationService, using an async_event interaction type. Use Node.js for backend service implementation. The service should handle high volumes of notifications to ensure scalability.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "2",
+          "title": "Create async_event listener",
+          "description": "Create an async_event listener in the NotificationService that listens for completed classification events from the IrisClassificationService. The listener should be able to handle high volumes of events and should efficiently process these events to send notifications to the users. The listener should be designed to handle potential future changes in the event structure. Use Node.js event modules for this task.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "1"
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Implement notification processing",
+          "description": "Implement the processing of notifications in the NotificationService. This includes extracting the necessary information from the classification event, formatting the notification message, and sending the notification to the user. Notifications should be sent via email, so an SMTP library such as Nodemailer will be required. The format of the notification message should be easy to understand and should include all the necessary information from the classification event.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "2"
+          ]
+        },
+        {
+          "id": "4",
+          "title": "Test NotificationService",
+          "description": "Test the implementation of the NotificationService. Test scenarios should include triggering a classification event and ensuring a notification is sent, testing the service under high volumes of events, and testing the service with variations in event data. Use Jest for unit testing and Postman for API testing.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "1",
+            "2",
+            "3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "MonitoringService",
+      "service_type": "monitoring",
+      "description": "Monitors system performance, logging, and error tracking across all services.",
+      "dependencies": [
+        {
+          "target_service": "IrisAPIGatewayService",
+          "interaction_type": "async_message",
+          "description": "Receives metrics and logs from the API Gateway for analysis."
+        },
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "async_message",
+          "description": "Collects performance metrics and processing logs."
+        }
+      ],
+      "database_requirements": {
+        "type": "time-series",
+        "description": "Stores monitoring data for future analysis and alerting.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "1",
+          "title": "Implement interaction with IrisAPIGatewayService",
+          "description": "Implement an asynchronous messaging interaction with the IrisAPIGatewayService. This will involve setting up a message queue (such as RabbitMQ) and programming the MonitoringService to receive and process messages containing metrics and logs from the APIGatewayService. Messages should be in JSON format and contain data such as timestamp, service name, log level, and log message.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "2",
+          "title": "Implement interaction with IrisClassificationService",
+          "description": "Implement an asynchronous messaging interaction with the IrisClassificationService. This will involve programming the MonitoringService to receive and process messages containing performance metrics and processing logs. Messages should be in JSON format and contain data such as timestamp, service name, metrics data, and log message.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "1"
+          ]
+        },
+        {
+          "id": "3",
+          "title": "Create time-series database for monitoring data",
+          "description": "Set up a time-series database (such as InfluxDB) to store monitoring data. The database should have a schema that supports the storage of timestamped monitoring data from different services. The database should have high write and read performance and be scalable to support a large number of services and high-frequency monitoring data.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "4",
+          "title": "Implement data storage functionality in MonitoringService",
+          "description": "Implement functionality in the MonitoringService to store received monitoring data in the time-series database. This will involve programming the MonitoringService to parse received messages, transform the data into the format required by the database schema, and write the data to the database.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "1",
+            "2",
+            "3"
+          ]
+        }
+      ]
+    }
+  ]
+}

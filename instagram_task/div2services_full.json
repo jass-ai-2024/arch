@@ -1,0 +1,377 @@
+{
+  "services": [
+    {
+      "name": "UserManagementService",
+      "service_type": "crud",
+      "description": "Handles user registration, authentication, and profile management.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Stores user details and authentication credentials.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "Task-001",
+          "title": "Create Database Schema",
+          "description": "Create a relational database schema for storing user details and authentication credentials. This should include columns for username, password (hashed), email, full name, and a unique user ID. Technologies to use: SQL Server 2019. No API endpoints are required for this task. Performance requirement: The database should be optimized for reads.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "Task-002",
+          "title": "Implement Registration API Endpoint",
+          "description": "Implement an API endpoint for user registration. It should accept POST requests with a JSON body containing username, password, email, and full name. It should return a response containing the unique user ID. Technologies to use: .NET Core 3.1, ASP.NET Core. Input/Output data structure example: Request - { 'username': 'User1', 'password': 'Pass123', 'email': 'user1@gmail.com', 'fullName': 'User One' }, Response - { 'userId': '12345' }. Performance requirement: The endpoint should be able to handle 1000 requests per minute. Test scenario: Call the endpoint with valid and invalid data, check that user data is stored in the database and the correct response is returned.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "Task-001"
+          ]
+        },
+        {
+          "id": "Task-003",
+          "title": "Implement Password Hashing",
+          "description": "Implement password hashing for the registration process. The password should be hashed before being stored in the database. Technologies to use: .NET Core 3.1, ASP.NET Core. No API endpoints are required for this task. No specific performance or scalability requirement for this task. Test scenario: Check that the stored password is hashed and not the original plain text.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "Task-002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ContentGenerationService",
+      "service_type": "processing",
+      "description": "Generates content such as images, captions, and hashtags for Instagram posts.",
+      "dependencies": [
+        {
+          "target_service": "UserManagementService",
+          "interaction_type": "sync_rest",
+          "description": "Validates user permissions for content generation."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "This service does not require a dedicated database.",
+        "required": false
+      },
+      "low_level_tasks": []
+    },
+    {
+      "name": "ImageStorageService",
+      "service_type": "file_storage",
+      "description": "Stores generated images for user posts.",
+      "dependencies": [
+        {
+          "target_service": "ContentGenerationService",
+          "interaction_type": "async_message",
+          "description": "Receives images to be stored after generation."
+        }
+      ],
+      "database_requirements": {
+        "type": "cloud_storage",
+        "description": "Stores images in a scalable cloud storage solution.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "task1",
+          "title": "Implement Image Upload Functionality",
+          "description": "Develop a function to receive images from the ContentGenerationService asynchronously. This should be done using Node.js with Express.js for handling HTTP requests and Cloud Storage libraries for integrating with the cloud storage solution. The function should accept a POST request with the image file in the request body and save it to the cloud storage. The image file should be encoded in base64 and the function should decode it before saving. The function should return a response with the status of the upload and the URL of the saved image.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task2",
+          "title": "Configure Cloud Storage",
+          "description": "Set up the cloud storage solution to store the images. This should be done using Google Cloud Storage. The storage bucket should be configured to allow public read access to the stored images. The bucket name and other configuration details should be stored in environment variables for security and flexibility. The code should handle potential errors during file upload and return appropriate error messages.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task3",
+          "title": "Test Image Upload Functionality",
+          "description": "Create test cases for the image upload functionality. This should be done using a testing framework like Jest. The test cases should cover all possible scenarios including successful image upload, failed image upload due to various reasons (e.g., invalid file format, file too large, etc.), and proper error handling. The test cases should assert that the function returns the correct status and response for each scenario.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task1",
+            "task2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ContentSchedulerService",
+      "service_type": "scheduler",
+      "description": "Schedules posts for publishing on Instagram at specified times.",
+      "dependencies": [
+        {
+          "target_service": "ContentStorageService",
+          "interaction_type": "queue_pub_sub",
+          "description": "Subscribes to new content uploads for scheduling."
+        },
+        {
+          "target_service": "InstagramIntegrationService",
+          "interaction_type": "sync_rest",
+          "description": "Initiates the post publishing process on Instagram."
+        }
+      ],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Stores scheduling information and history.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "T1",
+          "title": "Implement ContentStorageService Subscription",
+          "description": "Develop a feature that subscribes to the ContentStorageService for new content uploads. This will involve creating a pub-sub model and writing methods for handling new content notifications. Use Node.js v14.0 and RabbitMQ v3.8.9 for the pub-sub model. The input will be new content objects from the ContentStorageService, and the output should be a boolean indicating success or failure.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "T2",
+          "title": "Create Scheduling Database",
+          "description": "Set up a relational database for storing scheduling information and history. Use PostgreSQL v13.2. The database should have tables for scheduled posts and post history, with fields for identifiers, timestamps, content data, and status. The output should be a fully functional database with CRUD operations enabled.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "T3",
+          "title": "Develop Post Scheduling Logic",
+          "description": "Write code for scheduling posts based on the content received from the ContentStorageService. This will involve writing methods that take the content data and scheduling time as input and store it in the database. Use Node.js v14.0 and Sequelize ORM v6.3.5. The output should be a boolean indicating success or failure.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "T1",
+            "T2"
+          ]
+        },
+        {
+          "id": "T4",
+          "title": "Implement Instagram Integration",
+          "description": "Develop a feature that initiates the post publishing process on Instagram. This involves creating a synchronous REST API call to the InstagramIntegrationService. Use Node.js v14.0 and Axios v0.21.1 for making the API calls. The input will be the post data from the database, and the output should be a response object from InstagramIntegrationService.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "T2",
+            "T3"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "InstagramIntegrationService",
+      "service_type": "integration",
+      "description": "Handles the integration with Instagram's API for post publishing.",
+      "dependencies": [
+        {
+          "target_service": "AuthTokenStorageService",
+          "interaction_type": "sync_rest",
+          "description": "Retrieves OAuth tokens necessary for authenticating with Instagram."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "This service directly interfaces with Instagram's API without local storage.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "task-1",
+          "title": "Implement OAuth authentication with Instagram API",
+          "description": "Create a function to authenticate the application with Instagram's API using OAuth 2.0 protocol. The function should make a POST request to Instagram's OAuth endpoint (/oauth/access_token). Use the OAuth tokens retrieved from 'AuthTokenStorageService'. The function should handle token refresh logic and error scenarios. Expected input is the user's Instagram credentials and output is the OAuth token.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task-2",
+          "title": "Create function for publishing post to Instagram",
+          "description": "Develop a function to publish a post to Instagram using the authenticated API. This function should make a POST request to the /media/object endpoint of Instagram's API. The function should handle different media types (image, video) and include error handling. Expected input is a JSON object with the media url and caption, output is the response from Instagram's API.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task-1"
+          ]
+        },
+        {
+          "id": "task-3",
+          "title": "Implement service integration tests",
+          "description": "Write integration tests to ensure the 'InstagramIntegrationService' is functioning correctly. The tests should cover all endpoints, request/response formats, and error handling. Use mock data for the testing. The tests should assert that the correct status code and response format is returned for each test case.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task-1",
+            "task-2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AuthTokenStorageService",
+      "service_type": "database",
+      "description": "Stores and manages OAuth tokens for accessing Instagram APIs.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "key_value",
+        "description": "Securely stores OAuth tokens in a key-value store for quick retrieval.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "task_1",
+          "title": "Create the database structure for OAuth tokens",
+          "description": "Create a database structure using a key-value store (such as Redis) for storing OAuth tokens. The database should have two fields: 'key', which is the user id, and 'value', which is the OAuth token. The database should be secure and allow for quick retrieval of tokens. Use the latest version of the chosen database technology. The input to the database will be a key-value pair of user id and OAuth token. Output will be the OAuth token when given a user id.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task_2",
+          "title": "Implement methods for managing OAuth tokens",
+          "description": "Implement methods for storing, retrieving, and deleting OAuth tokens in the database. The methods should take a user id as input and return the corresponding OAuth token. The methods should handle potential errors such as a non-existent user id. Use the latest version of your chosen programming language. The input to the methods will be a user id. Outputs will depend on the method: 'store' will return a confirmation of storage, 'retrieve' will return the OAuth token, and 'delete' will return a confirmation of deletion.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task_1"
+          ]
+        },
+        {
+          "id": "task_3",
+          "title": "Test the OAuth token storage system",
+          "description": "Conduct tests to ensure the OAuth token storage system works as intended. The tests should cover storing, retrieving, and deleting tokens. They should also test for potential errors such as a non-existent user id. Use a testing library compatible with your chosen programming language. The input to the tests will be a user id and an OAuth token. The output will be the results of the tests.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task_2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NotificationService",
+      "service_type": "notification",
+      "description": "Sends notifications to users about content readiness, posting status, and errors.",
+      "dependencies": [
+        {
+          "target_service": "UserManagementService",
+          "interaction_type": "sync_rest",
+          "description": "Fetches user contact details for sending notifications."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "Utilizes a third-party notification service API without local storage.",
+        "required": false
+      },
+      "low_level_tasks": [
+        {
+          "id": "TASK001",
+          "title": "Implement User Contact Information Retrieval",
+          "description": "Implement a method in NotificationService to fetch user contact details from UserManagementService. The method should use synchronous REST API calls. The REST API calls should be handled using a library like RestTemplate in Spring Boot. The input to the method would be userID and the output would be a UserContactDetails object containing user's email and phone number. The method should handle any errors during the API call and throw appropriate exceptions. The request and response formats for the API call should be in JSON. The performance of the method should be such that it should not take more than 500ms for the API call.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "TASK002",
+          "title": "Implement Notification Sending",
+          "description": "Implement a method in NotificationService to send notifications to user using a third-party notification service API. The method should take UserContactDetails and Message as input and should return a boolean indicating whether the notification was sent successfully or not. The method should handle any errors during the API call and throw appropriate exceptions. The request and response formats for the API call should be in JSON. The performance of the method should be such that it should not take more than 1s for the API call.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "TASK001"
+          ]
+        },
+        {
+          "id": "TASK003",
+          "title": "Create Test Cases for Notification Service",
+          "description": "Create JUnit test cases for NotificationService. The test cases should cover all the methods in NotificationService and should test all possible scenarios including success, failure and exceptions. The test cases should assert on the method outputs and any exceptions thrown.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "TASK001",
+            "TASK002"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "AnalyticsService",
+      "service_type": "monitoring",
+      "description": "Monitors and analyses generated content performance and system KPIs.",
+      "dependencies": [
+        {
+          "target_service": "ContentSchedulerService",
+          "interaction_type": "async_event",
+          "description": "Receives events related to posting activities and outcomes."
+        }
+      ],
+      "database_requirements": {
+        "type": "time_series",
+        "description": "Stores analytical data for performance reporting.",
+        "required": true
+      },
+      "low_level_tasks": [
+        {
+          "id": "task1",
+          "title": "Implement Event Listener for ContentSchedulerService",
+          "description": "Develop an Event Listener class that can asynchronously receive and process events from the ContentSchedulerService. The class should use the Observer design pattern. It should be implemented in Java, using Spring Boot v2.3. The output should be a JSON object, containing the event data. This data should be stored in a time series database for further analysis.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": []
+        },
+        {
+          "id": "task2",
+          "title": "Configure Time Series Database",
+          "description": "Install and configure a time series database (InfluxDB v1.8). The database should be able to store incoming events data from the Event Listener, including event timestamp, content ID, and post status. The database should be scalable to handle increasing data volumes.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task1"
+          ]
+        },
+        {
+          "id": "task3",
+          "title": "Develop Data Analysis Functionality",
+          "description": "Create a Data Analysis class that can process data from the time series database. This class should be able to perform statistical analysis methods (mean, median, mode, etc.) and generate reports on content performance (views, likes, shares, etc.). It should use Java and Apache Commons Math library. The output should be a JSON object containing the analysis results.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task2"
+          ]
+        },
+        {
+          "id": "task4",
+          "title": "Implement API Endpoints for Data Retrieval",
+          "description": "Develop RESTful API endpoints using Spring Boot that allow for the retrieval of analytical data. These endpoints should return JSON objects containing the analysis results from the Data Analysis class. The API should adhere to OpenAPI specifications.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task3"
+          ]
+        },
+        {
+          "id": "task5",
+          "title": "Perform Load Testing",
+          "description": "Test the entire AnalyticsService under heavy load conditions using JMeter. Ensure that the service can handle a large number of events from the ContentSchedulerService and that the database does not become a bottleneck. The service should be able to handle at least 1000 events per second.",
+          "priority": "2",
+          "estimate": 0,
+          "dependencies": [
+            "task4"
+          ]
+        }
+      ]
+    }
+  ]
+}

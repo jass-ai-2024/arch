@@ -1,0 +1,65 @@
+Technical specifications for the development of an automatic content generation system for Instagram
+
+Project objective:
+To develop a system that allows the user to automatically generate content for Instagram reels based on the analysis of an existing account, target audience, and trends.
+
+Functional requirements:
+
+1. Uploading an Instagram account:
+- The user can connect their Instagram account or the account of a company/person they want to create similar content to.
+- The system must ensure a secure connection of the account for data analysis, while maintaining the user's privacy and confidentiality.
+
+2. Account and target audience analysis:
+- The model analyzes the account content (posts, reels, metrics for views, likes, comments).
+- Based on the collected data, the model identifies the characteristics of the target audience (age, gender, interests, activity).
+- The system offers the user three target audience options to choose from, with a brief description of each audience.
+- The user selects one target audience option that best suits their goals.
+
+3. Creating a content generation request:
+- The user enters a request to create a video, describing the topic and main content (e.g. "massage video").
+- The system accepts the request and interprets it for further content generation.
+
+4. Searching for videos on stocks:
+- The model searches for videos on popular stock platforms, taking into account the user's request and the preferences of the target audience.
+- The selection of video materials must comply with the license requirements and be relevant to the request.
+
+5. Generating a reel based on stocks:
+- Based on the collected videos, the model generates a reel, automatically selecting timing, visual effects and editing transitions, focusing on current reel trends on Instagram.
+- The reel timing must correspond to popular formats, which increases the likelihood of target audience engagement.
+- The model automatically creates a reel structure, including musical accompaniment, effects and texts, based on an analysis of popular trends.
+
+Non-functional requirements:
+
+1. Usability:
+- The system interface should be intuitive and convenient for users without technical skills.
+- All generation stages should be visualized and accompanied by step-by-step instructions.
+
+2. Performance:
+- The time for analyzing an account and generating a reel should not exceed 10 minutes.
+- Reels should be generated in a mode as close to real time as possible.
+
+3. Privacy and security:
+- User data should be protected at all stages, from connecting an account to storing and processing information.
+- Integration with Instagram should comply with the API rules and privacy policies of the platform.
+
+Technological requirements:
+
+1. API integration:
+- Integration with Instagram API to collect data on posts, reels, and account metrics.
+- Use of stock platforms with open APIs to search for video content.
+
+2. Machine learning and data analysis:
+- Use of NLP methods and image analysis to determine the characteristics of content and target audience.
+- The trend analysis model should be updated regularly to account for changes in reels trends.
+
+Implementation stages:
+
+1. Stage 1: Developing a system for uploading accounts and secure integration with Instagram.
+2. Stage 2: Creating a model for analyzing content and identifying a target audience.
+3. Stage 3: Implementing functionality for creating requests and searching for video materials.
+4. Stage 4: Developing a model for generating reels taking into account trends.
+5. Stage 5: Testing the system and improving it based on testing results.
+
+Expected results:
+- MVP of the system that allows users to connect accounts and generate reels.
+- Increasing user content engagement through the use of current trends and audience analysis.

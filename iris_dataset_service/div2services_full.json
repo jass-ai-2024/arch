@@ -1,0 +1,126 @@
+{
+  "services": [
+    {
+      "name": "IrisDataStorageService",
+      "service_type": "database",
+      "description": "Handles the storage and retrieval of Iris dataset records.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "relational",
+        "description": "Requires a database to store Iris dataset records with support for CRUD operations.",
+        "required": true
+      }
+    },
+    {
+      "name": "IrisDataCRUDService",
+      "service_type": "crud",
+      "description": "Provides CRUD operations for managing Iris dataset records.",
+      "dependencies": [
+        {
+          "target_service": "IrisDataStorageService",
+          "interaction_type": "sync_rest",
+          "description": "Interacts with the storage service to perform CRUD operations on Iris data."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "No direct database; relies on IrisDataStorageService.",
+        "required": false
+      }
+    },
+    {
+      "name": "IrisClassificationService",
+      "service_type": "processing",
+      "description": "Contains the logic to classify Iris samples using a machine learning model.",
+      "dependencies": [
+        {
+          "target_service": "IrisDataStorageService",
+          "interaction_type": "sync_rest",
+          "description": "Fetches Iris data required for training or classification."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "No direct database; performs in-memory processing.",
+        "required": false
+      }
+    },
+    {
+      "name": "UserAuthenticationService",
+      "service_type": "auth",
+      "description": "Manages user authentication and provides secure access to the Iris system APIs.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "non-relational",
+        "description": "Stores user credentials and authentication tokens.",
+        "required": true
+      }
+    },
+    {
+      "name": "IrisAPIGatewayService",
+      "service_type": "gateway",
+      "description": "Serves as the API gateway, routing requests to appropriate microservices such as CRUD and classification services.",
+      "dependencies": [
+        {
+          "target_service": "UserAuthenticationService",
+          "interaction_type": "sync_rest",
+          "description": "Verifies user identity and permissions before routing requests."
+        },
+        {
+          "target_service": "IrisDataCRUDService",
+          "interaction_type": "sync_rest",
+          "description": "Routes requests for managing Iris data."
+        },
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "sync_rest",
+          "description": "Routes requests for Iris classification tasks."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "Acts as a routing service, no data storage needed.",
+        "required": false
+      }
+    },
+    {
+      "name": "NotificationService",
+      "service_type": "notification",
+      "description": "Notifies users about the classification results or any system alerts.",
+      "dependencies": [
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "async_event",
+          "description": "Listens for completed classification events to notify users."
+        }
+      ],
+      "database_requirements": {
+        "type": "none",
+        "description": "Temporary in-memory storage for notification processing.",
+        "required": false
+      }
+    },
+    {
+      "name": "MonitoringService",
+      "service_type": "monitoring",
+      "description": "Monitors system performance, logging, and error tracking across all services.",
+      "dependencies": [
+        {
+          "target_service": "IrisAPIGatewayService",
+          "interaction_type": "async_message",
+          "description": "Receives metrics and logs from the API Gateway for analysis."
+        },
+        {
+          "target_service": "IrisClassificationService",
+          "interaction_type": "async_message",
+          "description": "Collects performance metrics and processing logs."
+        }
+      ],
+      "database_requirements": {
+        "type": "time-series",
+        "description": "Stores monitoring data for future analysis and alerting.",
+        "required": true
+      }
+    }
+  ]
+}

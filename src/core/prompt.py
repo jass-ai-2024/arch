@@ -2,7 +2,7 @@ class Prompts:
     basic_promp = "Analyze and provide recommendations based on the following stages."
 
     class goal:
-        topic = "Введение и цели"
+        topic = "Introduction and Goals"
         agent_name = "Goal agent"
         instructions = """You are an expert in defining goals and objectives.
         Your task is to:
@@ -12,7 +12,7 @@ class Prompts:
         Provide a concise and actionable strategy to achieve these goals."""
 
     class constraints:
-        topic = "Ограничения"
+        topic = "Constraints"
         agent_name = "Constraints agent"
         instructions = """You are an expert in analyzing constraints in software projects.
         Your task is to:
@@ -22,7 +22,7 @@ class Prompts:
         Deliver insights to navigate project constraints effectively."""
 
     class context:
-        topic = "Контекст и область применения"
+        topic = "Context and Scope"
         agent_name = "Context agent"
         instructions = """You are an expert in understanding the application domain and context.
         Your task is to:
@@ -32,7 +32,7 @@ class Prompts:
         Deliver actionable insights based on the application context."""
 
     class solution_strategy:
-        topic = "Стратегия решения"
+        topic = "Solution Strategy"
         agent_name = "Solution Strategy agent"
         instructions = """You are an expert in creating software solution strategies.
         Your task is to:
@@ -42,7 +42,7 @@ class Prompts:
         Provide a detailed and feasible solution strategy."""
 
     class system_description:
-        topic = "Описание системы"
+        topic = "System Description"
         agent_name = "System Description agent"
         instructions = """You are an expert in describing software systems.
         Your task is to:
@@ -53,7 +53,7 @@ class Prompts:
         Provide a clear and comprehensive system description."""
 
     class diagrams:
-        topic = "Диаграммы: C4, UML, Схема деплоя"
+        topic = "Diagrams: C4, UML, Deployment Schema"
         agent_name = "Diagram agent"
         instructions = """You are an expert in creating system diagrams.
         Your task is to:
@@ -63,7 +63,7 @@ class Prompts:
         Deliver accurate and visually clear diagrams to support the system design."""
 
     class risks:
-        topic = "Риски и технический долг"
+        topic = "Risks and Technical Debt"
         agent_name = "Risks and Technical Debt agent"
         instructions = """You are an expert in identifying risks and managing technical debt.
         Your task is to:
@@ -76,7 +76,7 @@ class Prompts:
         "basic_prompt": "Analyze and provide recommendations based on the following stages.",
         "sections": {
             "goal": {
-                "topic": "Введение и цели",
+                "topic": "Introduction and Goals",
                 "agent_name": "Goal agent",
                 "instructions": """You are an expert in defining goals and objectives.
                 Your task is to:
@@ -86,7 +86,7 @@ class Prompts:
                 Provide a concise and actionable strategy to achieve these goals.""",
             },
             "constraints": {
-                "topic": "Ограничения",
+                "topic": "Constraints",
                 "agent_name": "Constraints agent",
                 "instructions": """You are an expert in analyzing constraints in software projects.
                 Your task is to:
@@ -96,7 +96,7 @@ class Prompts:
                 Deliver insights to navigate project constraints effectively.""",
             },
             "context": {
-                "topic": "Контекст и область применения",
+                "topic": "Context and Scope",
                 "agent_name": "Context agent",
                 "instructions": """You are an expert in understanding the application domain and context.
                 Your task is to:
@@ -106,7 +106,7 @@ class Prompts:
                 Deliver actionable insights based on the application context.""",
             },
             "solution_strategy": {
-                "topic": "Стратегия решения",
+                "topic": "Solution Strategy",
                 "agent_name": "Solution Strategy agent",
                 "instructions": """You are an expert in creating software solution strategies.
                 Your task is to:
@@ -116,7 +116,7 @@ class Prompts:
                 Provide a detailed and feasible solution strategy.""",
             },
             "system_description": {
-                "topic": "Описание системы",
+                "topic": "System Description",
                 "agent_name": "System Description agent",
                 "instructions": """You are an expert in describing software systems.
                 Your task is to:
@@ -127,7 +127,7 @@ class Prompts:
                 Provide a clear and comprehensive system description.""",
             },
             "diagrams": {
-                "topic": "Диаграммы: C4, UML, Схема деплоя",
+                "topic": "Diagrams: C4, UML, Deployment Schema",
                 "agent_name": "Diagram agent",
                 "instructions": """You are an expert in creating system diagrams.
                 Your task is to:
@@ -137,7 +137,7 @@ class Prompts:
                 Deliver accurate and visually clear diagrams to support the system design.""",
             },
             "risks": {
-                "topic": "Риски и технический долг",
+                "topic": "Risks and Technical Debt",
                 "agent_name": "Risks and Technical Debt agent",
                 "instructions": """You are an expert in identifying risks and managing technical debt.
                 Your task is to:
