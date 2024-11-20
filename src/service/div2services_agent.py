@@ -30,7 +30,6 @@ def count_tokens(func):
     return wrapper
 
 
-@count_tokens
 def get_agent_response(system_prompt, user_message):
     response = client.chat.completions.create(
         model="gpt-4o",
@@ -78,7 +77,7 @@ def create_service_decomposition_prompt():
         ]
     }
 
-    Service Types: crud, database, cache, auth, gateway, processing, notification, file_storage, monitoring, integration, scheduler
+    Service Types: frontend, crud, database, cache, auth, gateway, processing, notification, file_storage, monitoring, integration, scheduler
     
     Interaction Types: sync_rest, sync_grpc, async_event, async_message, queue_pub_sub, queue_point, stream, batch"""
 
