@@ -1,0 +1,15 @@
+{
+  "services": [
+    {
+      "name": "PaphosFrontend",
+      "service_type": "frontend",
+      "description": "This is a simple front-end service that displays the word 'Paphos' at the center of the screen.",
+      "dependencies": [],
+      "database_requirements": {
+        "type": "none",
+        "description": "No database is required for this static display.",
+        "required": false
+      }
+    }
+  ]
+}

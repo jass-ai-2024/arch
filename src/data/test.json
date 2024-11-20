@@ -1,0 +1,11 @@
+{
+    "name": "UserProfileService",
+    "service_type": "crud",
+    "description": "Handles user profiles including authentication, personal information, and preferences management.",
+    "dependencies": [],
+    "database_requirements": {
+        "type": "relational",
+        "description": "Stores user profile data, credentials, and preferences.",
+        "required": true
+    }
+}
