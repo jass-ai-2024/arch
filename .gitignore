@@ -170,3 +170,4 @@ pyrightconfig.json
 
 SESSION_NAME.session
 secret.json
+.DS_Store
