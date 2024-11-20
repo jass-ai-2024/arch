@@ -1,11 +1,11 @@
-from typing import List, Dict, Tuple
-from langchain_openai import ChatOpenAI
-from langchain.prompts import PromptTemplate
-from langchain.output_parsers import CommaSeparatedListOutputParser
 import json
 import logging
+from typing import Dict, List
 
-# Настройка логгера
+from langchain.output_parsers import CommaSeparatedListOutputParser
+from langchain.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
@@ -185,3 +185,11 @@ class TaskGeneratorService:
 
         self.logger.warning("Не найдено подходящего подхода для генерации задач")
         return []
+
+
+if __name__ == "__main__":
+    import sys
+    service = TaskGeneratorService()
+    test_data = json.loads(sys.stdin.read())
+    tasks = service.generate_backlog(test_data)  # Remove f-string since test_data is already a string/dict
+    print(json.dumps(tasks, indent=2, ensure_ascii=False))

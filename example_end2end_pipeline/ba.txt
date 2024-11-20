@@ -1,0 +1,2 @@
+НI need to make a product that will only consist of a front end, it will be one component where the word Paphos will be displayed in the center of the screen
+Only one service
