@@ -1,0 +1,21 @@
+ML Task #1: Research optimal NLP models for real-time toxic content detection across diverse languages
+==================================================
+ML Domain: NLP
+
+Description:
+Investigate and evaluate state-of-the-art NLP architectures and techniques to effectively detect and mitigate toxic content in real-time across a range of languages and dialects, ensuring high accuracy and minimal bias.
+
+Technical Constraints:
+- Achieve a toxic content identification accuracy rate of at least 95% consistently across different languages and dialects.
+- Ensure real-time detection with a response latency of less than 2 seconds.
+
+Evaluation Metrics:
+- F1-score
+- Precision
+- Recall
+
+Success Criteria:
+- Achieve 95% detection accuracy
+- Response latency under 2 seconds
+
+--------------------------------------------------
