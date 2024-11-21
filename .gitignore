@@ -164,6 +164,7 @@ cython_debug/
 
 .idea/
 poetry.lock
+poetry.toml
 pyproject.toml
 secrets/
 pyrightconfig.json
