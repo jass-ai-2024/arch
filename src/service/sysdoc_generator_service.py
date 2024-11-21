@@ -1,11 +1,9 @@
-import asyncio
 import os
 import time
 from typing import Optional, Tuple
 
-import nest_asyncio
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
+from openai import OpenAI
 from pydantic import BaseModel, Field
 
 import sys
@@ -18,8 +16,6 @@ from prompts.chat_completion_prompt import (CHAT_COMPLETION_PROMPT_SYSTEM,
 from prompts.solution_document_example import SOLUTION_DOCUMENT_EXAMPLE
 from prompts.sysdoc_template import SYS_DOC_TEMPLATE
 
-client = AsyncOpenAI()
-
 # Загрузка переменных окружения
 load_dotenv()
 
@@ -27,8 +23,8 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 MODEL_NAME = os.getenv('MODEL_NAME')
 
-# Создание клиента OpenAI
-client = AsyncOpenAI(
+# Оставить только одно создание клиента
+client = OpenAI(
     api_key=OPENAI_API_KEY,
 )
 
@@ -55,7 +51,7 @@ class SysDocSchema(BaseModel):
     point_14: str = Field(..., description="Пункт 14. Согласования и утверждения (История версий, Ответственные лица)")
 
 
-async def run_inference(system_message: str, user_message: str) -> Tuple[Optional[str], Optional[str]]:
+def run_inference(system_message: str, user_message: str) -> Tuple[Optional[str], Optional[str]]:
     """
     Запуск инференса с использованием API OpenAI и возврат сгенерированного текста или ошибки.
     :param system_message: Сообщение от системы
@@ -64,7 +60,7 @@ async def run_inference(system_message: str, user_message: str) -> Tuple[Optiona
     """
     start_time = time.time()
     try:
-        response = await client.beta.chat.completions.parse(
+        response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=[
                 {"role": "system", "content": system_message},
@@ -76,50 +72,104 @@ async def run_inference(system_message: str, user_message: str) -> Tuple[Optiona
         )
         elapsed_time = time.time() - start_time
         print(f"Время на инференс: {elapsed_time:.2f} секунд")
-        generated_text = response.choices[0].message.parsed.model_dump()
+        generated_text = response.choices[0].message.content
         return generated_text, None
     except Exception as e:
         return None, str(e)
     
-def main(solution_document_path: str, system_design_document_path: str, researcher_comments_path: str):
+def read_file_content(file_path: str) -> str:
+    """
+    Читает содержимое файла по указанному пути.
+    :param file_path: Путь к файлу
+    :return: Содержимое файла в виде строки
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        raise Exception(f"Ошибка при чтении файла {file_path}: {str(e)}")
+
+def validate_file_path(file_path: str, required: bool = False) -> str:
+    """
+    Проверяет существование файла и его доступность для чтения.
+    
+    :param file_path: Путь к файлу
+    :param required: Является ли файл обязательным
+    :return: Проверенный путь к файлу
+    :raises: FileNotFoundError если файл не существует и required=True
+    """
+    if not file_path and not required:
+        return ''
+    
+    if not os.path.isfile(file_path):
+        if required:
+            raise FileNotFoundError(f"Файл не найден: {file_path}")
+        return ''
+    
+    if not os.access(file_path, os.R_OK):
+        raise PermissionError(f"Нет прав на чтение файла: {file_path}")
+    
+    return file_path
+
+def main(solution_document_path: str, system_design_document_path: str, researcher_comments_path: str = None):
     """
     Основная функция для запуска сервиса генерации системных документов.
-    :param solution_document_path: Путь к файлу с документом решения
-    :param system_design_document_path: Путь к файлу с документом системного дизайна
     """
-    # 1. Обработка файла и извлечение текста
-    parsed_text = "предложений нет"
-    researcher_comments_path = parsed_text
+    try:
+        # Проверка входных файлов
+        solution_path = validate_file_path(solution_document_path)
+        output_dir = os.path.dirname(system_design_document_path)
+        if output_dir and not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        comments_path = validate_file_path(researcher_comments_path)
 
-    solution_document = SOLUTION_DOCUMENT_EXAMPLE
-    solution_document_path = solution_document
-    # 3. Запуск асинхронной функции run_inference
-    system_message = CHAT_COMPLETION_PROMPT_SYSTEM
-    user_message = CHAT_COMPLETION_PROMPT_USER.format(
-        solution_design_document=solution_document_path,  # поменять тут
-        researcher_comments=researcher_comments_path,  # поменять тут
-        sys_des_document_template=SYS_DOC_TEMPLATE
-    )
-    nest_asyncio.apply()
-    # 3. Запуск асинхронной функции run_inference
-    summary, error = asyncio.run(run_inference(system_message, user_message))
-    if error:
-        print(f"Произошла ошибка: {error}")
-        return
-    # 3. Парсинг сгенерированного резюме и удаление форматирования Markdown
-    print(summary)
-    print(len(summary))
+        # Чтение документа решения
+        solution_document = (
+            read_file_content(solution_path) if solution_path 
+            else SOLUTION_DOCUMENT_EXAMPLE
+        )
+        
+        # Чтение комментариев исследователя
+        researcher_comments = (
+            read_file_content(comments_path) if comments_path 
+            else "Красавчики, все верно!"
+        )
 
-    # 4. Сохранение сгенерированного текста в файл
-    with open(system_design_document_path, "w", encoding="utf-8") as file:
-        file.write(str(summary))
+        # Формирование сообщения пользователя
+        user_message = CHAT_COMPLETION_PROMPT_USER.format(
+            solution_design_document=solution_document,
+            researcher_comments=researcher_comments,
+            sys_des_document_template=SYS_DOC_TEMPLATE
+        )
+
+        system_message = CHAT_COMPLETION_PROMPT_SYSTEM
+        summary, error = run_inference(system_message, user_message)
+        if error:
+            print(f"Произошла ошибка: {error}")
+            return
+
+        # 4. Сохранение сгенерированного текста в файл
+        with open(system_design_document_path, "w", encoding="utf-8") as file:
+            file.write(str(summary))
+    except Exception as e:
+        print(f"Произошла ошибка: {str(e)}")
 
 
 if __name__ == "__main__":
-    solution_document_path = ""
-    system_design_document_path = "data/final_sysdoc.json"
-    researcher_comments_path = ""
+    import argparse
     
-    main(solution_document_path,
-         system_design_document_path,
-         researcher_comments_path)
+    parser = argparse.ArgumentParser(description='Generate system documentation')
+    parser.add_argument('--solution', type=str, default='',
+                        help='Path to solution document file')
+    parser.add_argument('--output', type=str, required=True,
+                        help='Path to output system design document file')
+    parser.add_argument('--comments', type=str, default='',
+                        help='Path to researcher comments file')
+    
+    args = parser.parse_args()
+    
+    try:
+        main(args.solution, args.output, args.comments)
+    except (FileNotFoundError, PermissionError) as e:
+        print(f"Ошибка при работе с файлами: {e}")
+        sys.exit(1)
