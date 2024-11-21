@@ -1,19 +1,23 @@
 import json
 import os
-
+import argparse
+import sys
 import plantuml
 from swarm import Agent, Swarm
-
+from dotenv import load_dotenv
+load_dotenv()
 
 class ArchitectureAgent:
-    def __init__(self):
+    def __init__(self, output_dir="output"):
         self.swarm = Swarm()
         # Изменяем URL на более надежный сервер
         self.plantuml_server = plantuml.PlantUML(
             url="http://www.plantuml.com/plantuml/png/"
         )
 
-        os.makedirs("output", exist_ok=True)
+        # Используем переданную директорию
+        self.output_dir = output_dir
+        os.makedirs(self.output_dir, exist_ok=True)
 
         self.diagram_agent = Agent(
             # client=
@@ -110,7 +114,8 @@ class ArchitectureAgent:
             output_files = {}
 
             for diagram_type, puml_code in diagrams.items():
-                output_file = os.path.join("output", f"{diagram_type}.png")
+                # Используем self.output_dir вместо хардкода
+                output_file = os.path.join(self.output_dir, f"{diagram_type}.png")
                 print(f"\nProcessing {diagram_type}...")
                 print(f"PlantUML code:\n{puml_code}\n")
 
@@ -142,10 +147,13 @@ class ArchitectureAgent:
 
 
 def main():
-    import sys
+    parser = argparse.ArgumentParser(description='Generate architecture diagrams from description')
+    parser.add_argument('--output-dir', default='output',
+                      help='Directory for output files (default: output)')
+    args = parser.parse_args()
 
     architecture_description = sys.stdin.read()
-    agent = ArchitectureAgent()
+    agent = ArchitectureAgent(output_dir=args.output_dir)
     diagram_files = agent.generate_diagrams(architecture_description)
     print(diagram_files)
 

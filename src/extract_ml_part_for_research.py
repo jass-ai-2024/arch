@@ -4,6 +4,10 @@ import os
 from openai import OpenAI
 import json
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 def create_ml_research_prompt():
     return """You are an expert ML researcher. Extract ONLY THE MAIN research-focused machine learning task from the solution description.
     Focus exclusively on the core ML research problem that needs investigation. Ignore secondary or auxiliary ML tasks.
@@ -59,7 +63,7 @@ def get_research_tasks(solution_description: str) -> dict:
     
     return json.loads(response.choices[0].message.content)
 
-def save_ml_research_doc(input_file: str, output_dir: str = '.') -> str:
+def save_ml_research_doc(input_file: str, output_file: str = 'research_task.txt') -> str:
     """
     Creates a research document focusing on strategic ML tasks.
     """
@@ -68,19 +72,7 @@ def save_ml_research_doc(input_file: str, output_dir: str = '.') -> str:
     
     research_tasks = get_research_tasks(content)
     
-    # Determine new file version
-    output_dir = Path(output_dir)
-    existing_files = list(output_dir.glob('research_task_*.txt'))
-    next_version = 0
-    if existing_files:
-        versions = []
-        for f in existing_files:
-            version_match = re.search(r'research_task_(\d+)', f.name)
-            if version_match:
-                versions.append(int(version_match.group(1)))
-        next_version = max(versions) + 1 if versions else 0
-    
-    # Updated formatting for new JSON structure
+    # Format content
     formatted_content = []
     for idx, task in enumerate(research_tasks['research_tasks'], 1):
         formatted_content.extend([
@@ -97,12 +89,11 @@ def save_ml_research_doc(input_file: str, output_dir: str = '.') -> str:
             "\n" + "-" * 50 + "\n"
         ])
     
-    # Create output file with version
-    output_file = output_dir / f'research_task_{next_version}.txt'
+    # Write to output file
     with open(output_file, 'w', encoding='utf-8') as f:
         f.write('\n'.join(formatted_content))
     
-    return str(output_file)
+    return output_file
 
 if __name__ == '__main__':
     import argparse
@@ -110,10 +101,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Extract ML content from system design document')
     parser.add_argument('--input', type=str, default='solution.txt',
                         help='Path to input solution document')
-    parser.add_argument('--output-dir', type=str, default='.',
-                        help='Directory to save the output ML document')
+    parser.add_argument('--output-file', type=str, default='research_task.txt',
+                        help='Path to output ML document')
     
     args = parser.parse_args()
     
-    output_path = save_ml_research_doc(args.input, args.output_dir)
+    output_path = save_ml_research_doc(args.input, args.output_file)
     print(f"ML design document created: {output_path}")
