@@ -1,0 +1,96 @@
+{
+  "services": [
+    {
+      "id": "901fc9da03d657875dddaccef55771bd",
+      "task_desc": {
+        "name": "IrisClassificationFrontend",
+        "service_type": "frontend",
+        "description": "Provides an interface for users to input iris flower measurements, submit classification requests, and view results.",
+        "dependencies": [
+          {
+            "target_service": "IrisClassificationBackend",
+            "interaction_type": "sync_rest",
+            "description": "Sends classification requests to the backend and receives the classification results.",
+            "full_description_service": {
+              "name": "IrisClassificationBackend",
+              "service_type": "backend",
+              "description": "Processes input data using a machine learning model for iris classification and returns the species prediction.",
+              "dependencies": [],
+              "database_requirements": {
+                "type": "NoSQL",
+                "description": "Stores logs of classification requests and responses for analysis and auditing purposes.",
+                "required": true
+              },
+              "low_level_tasks": []
+            }
+          }
+        ],
+        "database_requirements": {
+          "type": null,
+          "description": "No direct database requirements as it interacts with backend services for classification processes.",
+          "required": false
+        },
+        "low_level_tasks": [
+          {
+            "id": "task_1",
+            "title": "Design UI for Iris Classification",
+            "description": "Design a user-friendly UI that allows users to input iris flower measurements and submit classification requests. The UI should also display the classification results. Use HTML5, CSS3 and JavaScript for the UI design. No specific performance or scalability requirements for this task. Acceptance criteria: The UI should be intuitive and easy to use.",
+            "priority": "1",
+            "estimate": 0,
+            "dependencies": []
+          },
+          {
+            "id": "task_2",
+            "title": "Implement HTTP client for REST API communication",
+            "description": "Implement a HTTP client to send sync_rest requests to the IrisClassificationBackend service. Use axios.js (version 0.21.1) for the HTTP client. The client should send POST requests with the iris flower measurements in the request body in JSON format. The backend will respond with the classification results in JSON format. Acceptance criteria: The client should be able to successfully send requests and receive responses from the backend.",
+            "priority": "1",
+            "estimate": 0,
+            "dependencies": [
+              "task_1"
+            ]
+          },
+          {
+            "id": "task_3",
+            "title": "Integrate HTTP client with UI",
+            "description": "Integrate the HTTP client with the UI. When a user submits a classification request through the UI, the client should send a POST request to the backend with the iris measurements. The client should then display the classification result in the UI. Acceptance criteria: After submitting a classification request, the user should see the classification result in the UI.",
+            "priority": "1",
+            "estimate": 0,
+            "dependencies": [
+              "task_1",
+              "task_2"
+            ]
+          },
+          {
+            "id": "task_4",
+            "title": "Test frontend functionality",
+            "description": "Test the frontend's functionality. Ensure that the UI correctly takes user input and the client correctly sends requests and receives responses. The test scenarios should cover all possible input values for the iris measurements and all possible classification results. Use Jest (version 26.6.3) for testing. Acceptance criteria: All test cases should pass.",
+            "priority": "1",
+            "estimate": 0,
+            "dependencies": [
+              "task_1",
+              "task_2",
+              "task_3"
+            ]
+          }
+        ]
+      },
+      "task_type": "create"
+    },
+    {
+      "id": "b690d10435b51b70cbc5dfa9bc4ce291",
+      "task_desc": {
+        "name": "IrisClassificationBackend",
+        "service_type": "backend",
+        "description": "Processes input data using a machine learning model for iris classification and returns the species prediction.",
+        "dependencies": [],
+        "database_requirements": {
+          "type": "NoSQL",
+          "description": "Stores logs of classification requests and responses for analysis and auditing purposes.",
+          "required": true
+        },
+        "low_level_tasks": []
+      },
+      "task_type": "create"
+    }
+  ]
+}

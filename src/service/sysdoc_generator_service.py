@@ -107,8 +107,7 @@ def validate_file_path(file_path: str, required: bool = False) -> str:
         return ''
     
     if not os.access(file_path, os.R_OK):
-        raise PermissionError(f"No read permission for file: {file_path}")
-    
+        raise PermissionError(f"No read permission for file: {file_path}")    
     return file_path
 
 def main(solution_document_path: str, system_design_document_path: str, researcher_comments_path: str = None):

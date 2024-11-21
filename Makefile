@@ -15,4 +15,3 @@ prepare_json2dev:
 	PYTHONPATH="." python src/prepare_json2dev.py < ${EXAMPLE_DIR}/div2services_full.json &> ${EXAMPLE_DIR}/arch_services_v0.json
 create_scheme:
 	PYTHONPATH="." python scheme/scheme_generator.py < ${EXAMPLE_DIR}/div2services_full.json &> ${EXAMPLE_DIR}/scheme.log
-
