@@ -37,20 +37,22 @@ class SysDocSchema(BaseModel):
     """
     SysDocSchema is a Pydantic model that represents the schema for a system document.
     """
-    point_1: str = Field(..., description="Сгенерированный текст системного документа. Пункт 1. Введение (Цель документа, Список терминов и сокращений, Пользователи и заинтересованные стороны, Цели и задачи системы)")
-    point_2: str = Field(..., description="Сгенерированный текст системного документа. Пункт 2. Требования (Функциональные требования, Нефункциональные требования, Ограничения)")
-    point_3: str = Field(..., description="Сгенерированный текст системного документа. Пункт 3. Архитектурный дизайн (Общая архитектура, Диаграммы)")
-    point_4: str = Field(..., description="Сгенерированный текст системного документа. Пункт 4. Детализация компонентов (Модули и их взаимодействие, Интерфейсы)")
-    point_5: str = Field(..., description="Сгенерированный текст системного документа. Пункт 5. Дизайн данных (Модель данных, Хранилища данных)")
-    point_6: str = Field(..., description="Сгенерированный текст системного документа. Пункт 6. Пользовательский интерфейс (Описание UI или API EndPoint)")
-    point_7: str = Field(..., description="Сгенерированный текст системного документа. Пункт 7. Безопасность (Аутентификация и авторизация, Шифрование, Управление доступом)")
-    point_8: str = Field(..., description="Сгенерированный текст системного документа. Пункт 8. Производительность и масштабируемость (Требования к производительности, Стратегии масштабирования, Балансировка нагрузки)")
-    point_9: str = Field(..., description="Сгенерированный текст системного документа. Пункт 9. Интеграция с внешними системами (API и протоколы, Обработка ошибок и отказов)")
-    point_10: str = Field(..., description="Сгенерированный текст системного документа. Пункт 10. Развертывание и инфраструктура (Окружения, Инструменты и технологии, Процессы CI/CD)")
-    point_11: str = Field(..., description="Сгенерированный текст системного документа. Пункт 11. Тестирование (Стратегия тестирования, Инструменты тестирования, Критерии приемки)")
-    point_12: str = Field(..., description="Сгенерированный текст системного документа. Пункт 12. Мониторинг и логирование (Как система будет отслеживаться в реальном времени)")
-    point_13: str = Field(..., description="Сгенерированный текст системного документа. Пункт 13. Ограничения и предположения (Технические ограничения)")
-    point_14: str = Field(..., description="Сгенерированный текст системного документа. Пункт 14. Согласования и утверждения (История версий, Ответственные лица)")
+    tree_of_thought_architecture: str = Field(..., description="Use Tree-of-Thoughts method to generate the architecture. Step-by-step make a detailed architecture of the system.")
+    architecture_details: str = Field(..., description="Generate the full architecture of the system.")
+    point_1: str = Field(..., description="Пункт 1. Введение (Цель документа, Список терминов и сокращений, Пользователи и заинтересованные стороны, Цели и задачи системы)")
+    point_2: str = Field(..., description="Пункт 2. Требования (Функциональные требования, Нефункциональные требования, Ограничения)")
+    point_3: str = Field(..., description="Пункт 3. Архитектурный дизайн (Общая архитектура, Диаграммы)")
+    point_4: str = Field(..., description="Пункт 4. Детализация компонентов (Модули и их взаимодействие, Интерфейсы)")
+    point_5: str = Field(..., description="Пункт 5. Дизайн данных (Модель данных, Хранилища данных)")
+    point_6: str = Field(..., description="Пункт 6. Пользовательский интерфейс (Описание UI или API EndPoint)")
+    point_7: str = Field(..., description="Пункт 7. Безопасность (Аутентификация и авторизация, Шифрование, Управление доступом)")
+    point_8: str = Field(..., description="Пункт 8. Производительность и масштабируемость (Требования к производительности, Стратегии масштабирования, Балансировка нагрузки)")
+    point_9: str = Field(..., description="Пункт 9. Интеграция с внешними системами (API и протоколы, Обработка ошибок и отказов)")
+    point_10: str = Field(..., description="Пункт 10. Развертывание и инфраструктура (Окружения, Инструменты и технологии, Процессы CI/CD)")
+    point_11: str = Field(..., description="Пункт 11. Тестирование (Стратегия тестирования, Инструменты тестирования, Критерии приемки)")
+    point_12: str = Field(..., description="Пункт 12. Мониторинг и логирование (Как система будет отслеживаться в реальном времени)")
+    point_13: str = Field(..., description="Пункт 13. Ограничения и предположения (Технические ограничения)")
+    point_14: str = Field(..., description="Пункт 14. Согласования и утверждения (История версий, Ответственные лица)")
 
 
 async def run_inference(system_message: str, user_message: str) -> Tuple[Optional[str], Optional[str]]:
@@ -69,7 +71,7 @@ async def run_inference(system_message: str, user_message: str) -> Tuple[Optiona
                 {"role": "user", "content": user_message}
             ],
             temperature=0.4,
-            max_tokens=10000,
+            max_tokens=16000,
             response_format=SysDocSchema,
         )
         elapsed_time = time.time() - start_time
@@ -86,7 +88,7 @@ def main(solution_document_path: str, system_design_document_path: str, research
     :param system_design_document_path: Путь к файлу с документом системного дизайна
     """
     # 1. Обработка файла и извлечение текста
-    parsed_text = "Красавчики, все верно!"
+    parsed_text = "предложений нет"
     researcher_comments_path = parsed_text
 
     solution_document = SOLUTION_DOCUMENT_EXAMPLE
