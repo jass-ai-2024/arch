@@ -3,343 +3,157 @@
     {
       "name": "TextInputService",
       "service_type": "frontend",
-      "description": "Handles user interactions for text input and submitting content for toxicity analysis.",
+      "description": "This service handles user input of text that needs to be analyzed for toxicity.",
       "dependencies": [
         {
           "target_service": "ToxicityAnalysisService",
           "interaction_type": "sync_rest",
-          "description": "Submits text data for toxicity analysis and retrieves results."
-        },
-        {
-          "target_service": "AuthService",
-          "interaction_type": "sync_rest",
-          "description": "Validates user authentication for submitting text data."
+          "description": "Sends user input text to the ToxicityAnalysisService for analysis."
         }
       ],
       "database_requirements": {
         "type": "none",
-        "description": "Frontend application does not manage persistent data storage.",
+        "description": "This service does not require a database as it only handles text input and forwards it for processing.",
         "required": false
       },
       "low_level_tasks": [
         {
-          "id": "T1",
-          "title": "Implement TextInputService frontend application",
-          "description": "Develop a frontend application named TextInputService. This service will handle text input from users and submit this content for toxicity analysis. It will use React.js for the UI, and Axios for making REST API calls. The application will not manage persistent data storage, so no database integration is required. The service will interact with ToxicityAnalysisService and AuthService via synchronous REST calls. The AuthService validates user authentication for submitting text data and the ToxicityAnalysisService submits text data for toxicity analysis and retrieves the results.",
+          "id": "TIS-1",
+          "title": "Implement TextInputService",
+          "description": "Develop a front-end service named TextInputService that handles user input of text which needs to be analyzed for toxicity. It will interact with ToxicityAnalysisService using synchronous RESTful API call. The service will not require a database. Create necessary methods, classes, interfaces using JavaScript (ES6) and React.js (v17.0.2). The service should accept input text as a string and output it in a JSON format. Required API endpoint will be POST /analyze, where the request body contains { 'text': 'user input text' } and the response format is { 'status': 'success' || 'error', 'message': 'response message' }. The service should be designed with scalability in mind to handle a large number of requests and should pass all acceptance criteria and test scenarios.",
           "priority": "1",
           "estimate": 0,
           "dependencies": []
         },
         {
-          "id": "T2",
-          "title": "Create API integration with AuthService",
-          "description": "Integrate TextInputService with AuthService. This integration will be done using Axios and REST API calls. The input for the AuthService API will be user credentials and the output will be a response indicating whether the user is authenticated. The API endpoint for AuthService is '/api/auth'. The request format is a POST request with a JSON body containing 'username' and 'password' fields. The response format is a JSON body containing a 'status' field indicating 'success' or 'failure'.",
+          "id": "TIS-2",
+          "title": "Design User Interface for TextInputService",
+          "description": "Create a user-friendly interface for TextInputService where users can input text to be analyzed. Use HTML5, CSS3, and React.js (v17.0.2) to create a responsive and intuitive design. The interface should include a text input field and a submit button. On submission, the input text should be sent to the TextInputService for processing. The interface should also handle and display appropriate responses received from TextInputService.",
           "priority": "1",
           "estimate": 0,
           "dependencies": [
-            "T1"
+            "TIS-1"
           ]
         },
         {
-          "id": "T3",
-          "title": "Create API integration with ToxicityAnalysisService",
-          "description": "Integrate TextInputService with ToxicityAnalysisService. This integration will be done using Axios and REST API calls. The input for the ToxicityAnalysisService API will be text data and the output will be a response containing the toxicity analysis results. The API endpoint for ToxicityAnalysisService is '/api/analysis'. The request format is a POST request with a JSON body containing a 'text' field. The response format is a JSON body containing a 'result' field with the toxicity analysis results.",
+          "id": "TIS-3",
+          "title": "Test TextInputService and User Interface",
+          "description": "Conduct unit, integration and system testing on TextInputService and its user interface. Verify that the service correctly handles text inputs, interacts with ToxicityAnalysisService as expected, and the interface behaves as designed. Use Jest (v26.6.3) for testing. Ensure that all components, classes, methods, and functions are covered in the tests. Test scenarios should include valid and invalid user inputs, as well as edge cases.",
           "priority": "1",
           "estimate": 0,
           "dependencies": [
-            "T1"
+            "TIS-1",
+            "TIS-2"
           ]
         }
       ]
     },
     {
       "name": "ToxicityAnalysisService",
-      "service_type": "processing",
-      "description": "Performs analysis on submitted text to detect toxicity levels using machine learning models.",
-      "dependencies": [
-        {
-          "target_service": "ModelRepositoryService",
-          "interaction_type": "sync_rest",
-          "description": "Retrieves and loads the latest machine learning models for toxicity detection."
-        }
-      ],
-      "database_requirements": {
-        "type": "none",
-        "description": "Stateless service relying on models fetched from a repository.",
-        "required": false
-      },
-      "low_level_tasks": [
-        {
-          "id": "TAS-1",
-          "title": "Implement Toxicity Analysis Service",
-          "description": "Develop a stateless service that performs text analysis to detect toxicity levels using machine learning models. The service should interact with the ModelRepositoryService to fetch the latest toxicity detection models. Use Python 3.8+ for the service development, and Flask for creating the REST API. The service should have an API endpoint that accepts POST requests with a JSON payload containing the text to be analyzed. The response should be a JSON object containing the toxicity score. The service should be capable of processing multiple requests concurrently and be scalable to handle increased load.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": []
-        },
-        {
-          "id": "TAS-2",
-          "title": "Configure interaction with ModelRepositoryService",
-          "description": "Set up synchronous RESTful interaction with the ModelRepositoryService to fetch the latest machine learning models for toxicity detection. Use Python Requests library for making HTTP requests. The service should handle any potential errors during the interaction and respond appropriately. The model fetching should be efficient and not block the main thread of execution. Implement unit tests to validate the interaction functionality.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "TAS-1"
-          ]
-        },
-        {
-          "id": "TAS-3",
-          "title": "Implement Toxicity Analysis Algorithm",
-          "description": "Implement the algorithm that uses the fetched machine learning models to perform toxicity analysis on the submitted text. The algorithm should provide accurate and reliable toxicity scores. The performance of the algorithm should be optimized to handle large volumes of text. Implement unit tests to validate the accuracy and performance of the algorithm.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "TAS-2"
-          ]
-        },
-        {
-          "id": "TAS-4",
-          "title": "Create API Documentation",
-          "description": "Create comprehensive API documentation detailing the endpoint, request/response formats, and example usage. Use Swagger for documenting the API. The documentation should be clear, concise, and easily understandable. Implement unit tests to validate the API based on the documentation.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "TAS-1"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "AuthService",
-      "service_type": "auth",
-      "description": "Manages user authentication and authorization.",
+      "service_type": "backend",
+      "description": "This core service analyzes text for toxic language using machine learning models.",
       "dependencies": [],
       "database_requirements": {
-        "type": "relational",
-        "description": "Stores user credentials and session information.",
+        "type": "model_storage",
+        "description": "Stores pre-trained ML models required for text toxicity analysis.",
         "required": true
       },
       "low_level_tasks": [
         {
-          "id": "task1",
-          "title": "Setup relational database",
-          "description": "Install and configure a relational database system (e.g., MySQL, PostgreSQL). The database should be able to store user credentials and session information. It should support concurrent access and have a backup and recovery mechanism.",
+          "id": "task_001",
+          "title": "Establish Model Storage Database",
+          "description": "Create a model storage database for storing pre-trained ML models required for text toxicity analysis. This task includes setting up the database, creating tables and schemas, and setting the necessary permissions. The database should be able to handle large amounts of data and provide high performance. The database can be built using PostgreSQL or MySQL.",
           "priority": "1",
           "estimate": 0,
           "dependencies": []
         },
         {
-          "id": "task2",
-          "title": "Design database schema",
-          "description": "Design a database schema for storing user credentials (username, hashed password) and session information (user id, session id, expiry time). The schema should be normalized to eliminate data redundancy and improve data integrity.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "task1"
-          ]
-        },
-        {
-          "id": "task3",
-          "title": "Implement user registration",
-          "description": "Create an API endpoint for user registration. The endpoint should accept a POST request with a JSON payload containing username and password, and return a response indicating success or failure. The password should be hashed before being stored in the database. Use bcrypt for password hashing.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "task2"
-          ]
-        },
-        {
-          "id": "task4",
-          "title": "Implement user login",
-          "description": "Create an API endpoint for user login. The endpoint should accept a POST request with a JSON payload containing username and password, compare the hashed password with the one stored in the database, and return a response containing a session id if the login is successful. The session id should be stored in the database with an expiry time.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "task2",
-            "task3"
-          ]
-        },
-        {
-          "id": "task5",
-          "title": "Implement session management",
-          "description": "Implement methods for creating, retrieving, and deleting sessions in the database. A session should be created when a user logs in, retrieved when a user sends a request with a valid session id, and deleted when a user logs out or when the session expires.",
+          "id": "task_002",
+          "title": "Implement Text Processing Functionality",
+          "description": "Develop a text processing module that will prepare the input text for toxicity analysis. This includes tokenization, stop words removal, stemming, and lemmatization. NLTK and TextBlob libraries can be used for this purpose. The function should take raw text as input and return processed text.",
           "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "task2",
-            "task4"
-          ]
-        },
-        {
-          "id": "task6",
-          "title": "Implement user logout",
-          "description": "Create an API endpoint for user logout. The endpoint should accept a POST request with a JSON payload containing a session id, delete the session from the database, and return a response indicating success or failure.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "task2",
-            "task5"
-          ]
-        },
-        {
-          "id": "task7",
-          "title": "Setup API rate limiting",
-          "description": "Implement rate limiting on the API to prevent brute force attacks. Use a library such as express-rate-limit. The rate limit should be configurable and apply per IP address.",
-          "priority": "3",
-          "estimate": 0,
-          "dependencies": [
-            "task3",
-            "task4",
-            "task6"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ModelRepositoryService",
-      "service_type": "file_storage",
-      "description": "Stores and serves machine learning models for toxicity detection analysis.",
-      "dependencies": [],
-      "database_requirements": {
-        "type": "blob",
-        "description": "Holds large model files and version information.",
-        "required": true
-      },
-      "low_level_tasks": [
-        {
-          "id": "1",
-          "title": "Implement Blob Storage",
-          "description": "Implement the blob storage for storing machine learning models. The blob storage should be able to store large files as well as version information. Use Azure Blob Storage service to implement this feature. Make sure the blob storage is scalable and performant. The blob storage should have a method to upload files, a method to download files, and a method to get version information. The input to the upload method should be a file and the output should be a success message. The input to the download method should be a file name and the output should be the file. The input to the get version method should be a file name and the output should be the version information.",
-          "priority": "1",
           "estimate": 0,
           "dependencies": []
         },
         {
-          "id": "2",
+          "id": "task_003",
+          "title": "Integrate ML Models",
+          "description": "Integrate the pre-trained ML models into the application. This task requires loading models from the database, creating a prediction function that uses the model to analyze text toxicity, and returning the result. The models should be implemented using TensorFlow or PyTorch.",
+          "priority": "1",
+          "estimate": 0,
+          "dependencies": [
+            "task_001"
+          ]
+        },
+        {
+          "id": "task_004",
           "title": "Create API Endpoints",
-          "description": "Create API endpoints to interact with the blob storage. There should be an endpoint to upload a file, an endpoint to download a file, and an endpoint to get version information. The upload endpoint should accept a file and return a success message. The download endpoint should accept a file name and return the file. The get version endpoint should accept a file name and return the version information. Use Django to create the API endpoints. The API should follow REST principles and use JSON for data interchange.",
+          "description": "Create API endpoints for the service. An endpoint is needed to receive text input, process it, and return the toxicity analysis result. The API should be built using Flask or Django and return responses in JSON format.",
           "priority": "1",
           "estimate": 0,
           "dependencies": [
-            "1"
+            "task_002",
+            "task_003"
           ]
         },
         {
-          "id": "3",
-          "title": "Configure Security",
-          "description": "Configure security for the API and the blob storage. The API should be secured with token-based authentication. The blob storage should be secured with Azure's built-in security features. Ensure that only authenticated users can upload, download, and get version information. Use Django's built-in authentication system for the API security. Use Azure's security features for the blob storage security.",
+          "id": "task_005",
+          "title": "Implement Error Handling and Logging",
+          "description": "Implement error handling and logging functionality to track any issues in the service. This includes catching exceptions, returning appropriate responses, and logging errors with details for debugging. Python's built-in logging module can be used for this purpose.",
           "priority": "2",
           "estimate": 0,
           "dependencies": [
-            "1",
-            "2"
+            "task_004"
           ]
         },
         {
-          "id": "4",
-          "title": "Test the System",
-          "description": "Create tests to ensure the system works as expected. There should be tests for the blob storage as well as the API. The tests should cover all the methods of the blob storage and all the endpoints of the API. Use Python's unittest library to create the tests. The tests should be automated and run on a continuous integration server.",
+          "id": "task_006",
+          "title": "Performance Testing and Optimization",
+          "description": "Test the service for performance and optimize as necessary. This includes load testing, identifying bottlenecks, and implementing solutions to improve speed and efficiency. Tools like JMeter or Locust can be used for performance testing.",
           "priority": "3",
           "estimate": 0,
           "dependencies": [
-            "1",
-            "2",
-            "3"
+            "task_004",
+            "task_005"
           ]
         }
       ]
     },
     {
-      "name": "NotificationService",
-      "service_type": "notification",
-      "description": "Sends alerts and notifications about analysis results to users.",
+      "name": "ResultProcessingService",
+      "service_type": "backend",
+      "description": "This service processes the results from the ToxicityAnalysisService and formats them for frontend display.",
       "dependencies": [
         {
-          "target_service": "UserProfileService",
+          "target_service": "ToxicityAnalysisService",
           "interaction_type": "sync_rest",
-          "description": "Fetches user preferences for notification delivery methods."
+          "description": "Receives analysis results from ToxicityAnalysisService."
+        },
+        {
+          "target_service": "TextInputService",
+          "interaction_type": "async_message",
+          "description": "Sends back processed results for user display."
         }
       ],
       "database_requirements": {
         "type": "none",
-        "description": "Relies on external user profile service for data.",
+        "description": "Temporary data handling; no persistent storage required.",
         "required": false
       },
       "low_level_tasks": [
         {
-          "id": "T1",
-          "title": "Implement REST Client for UserProfileService",
-          "description": "Implement a REST client to communicate with the UserProfileService. The client should be able to send GET requests to fetch user preferences for notification delivery methods. Use Java HttpClient or Retrofit for the REST client implementation. The response data structure should be a JSON object representing user preferences.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": []
-        },
-        {
-          "id": "T2",
-          "title": "Create Data Model for User Preferences",
-          "description": "Define a data model for user preferences that matches the response from UserProfileService. The data model should be a Java class with fields that correspond to the JSON object keys. Use Jackson or Gson to parse the JSON response into the data model.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": [
-            "T1"
-          ]
-        },
-        {
-          "id": "T3",
-          "title": "Configure Notification Delivery Methods",
-          "description": "Based on the user preferences fetched from UserProfileService, configure the appropriate notification delivery methods. This could involve configuring settings for email, SMS, or push notifications. For each method, define the message format and the delivery mechanism.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "T2"
-          ]
-        },
-        {
-          "id": "T4",
-          "title": "Implement Analysis Results Alert Mechanism",
-          "description": "Implement the mechanism to alert users about analysis results. This involves using the configured notification delivery methods to send the alerts. Ensure the alerts include relevant information from the analysis results and adhere to the user's preferences.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "T3"
-          ]
-        },
-        {
-          "id": "T5",
-          "title": "Create Tests for Notification Service",
-          "description": "Create unit tests for the NotificationService to ensure it correctly fetches user preferences, configures delivery methods, and sends alerts. Use JUnit for the unit tests. Create integration tests to verify the Service interacts correctly with UserProfileService and the delivery methods.",
-          "priority": "3",
-          "estimate": 0,
-          "dependencies": [
-            "T4"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "UserProfileService",
-      "service_type": "crud",
-      "description": "Manages user profiles and preferences.",
-      "dependencies": [],
-      "database_requirements": {
-        "type": "relational",
-        "description": "Stores user profile data and notification settings.",
-        "required": true
-      },
-      "low_level_tasks": [
-        {
           "id": "task1",
-          "title": "Set up relational database",
-          "description": "Set up a relational database to store user profile data and notification settings. The database should be scalable and performant. Use SQL for database management. The data structure for user profile should include fields like 'user_id', 'username', 'email', 'preferences', etc. The data structure for notification settings should include 'user_id', 'email_notifications', 'push_notifications', etc.",
+          "title": "Create Service to Process ToxicityAnalysisService Results",
+          "description": "Develop a backend service that receives results from ToxicityAnalysisService using synchronous REST interaction. Use Node.js platform and Express.js framework version 4.x for REST API development. The service should parse the input JSON data structure received from ToxicityAnalysisService, which can be an array of objects with properties 'id', 'text', 'toxicityScore'. The output should be a processed result formatted for frontend display which should be a JSON object with properties 'id', 'text', 'toxicityLevel'. No database interaction is required.",
           "priority": "1",
           "estimate": 0,
           "dependencies": []
         },
         {
           "id": "task2",
-          "title": "Implement User Profile model",
-          "description": "Implement the User Profile model in the service using Object-Relational Mapping (ORM). The model should include fields to store user details and preferences. Create methods for creating, reading, updating, and deleting user profiles. Ensure all data interactions are efficient and secure.",
-          "priority": "2",
+          "title": "Implement Asynchronous Messaging to TextInputService",
+          "description": "Develop functionality to send back processed results to TextInputService using asynchronous messaging. Use RabbitMQ for message queueing. The message should contain the processed results in the JSON format described in task1. No database interaction is required.",
+          "priority": "1",
           "estimate": 0,
           "dependencies": [
             "task1"
@@ -347,60 +161,8 @@
         },
         {
           "id": "task3",
-          "title": "Implement CRUD API endpoints",
-          "description": "Implement CRUD (Create, Read, Update, Delete) API endpoints for user profiles. They should correspond to the methods in the User Profile model. Ensure that the endpoints are secure, i.e., they require authentication. The request and response formats should be in JSON.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "task2"
-          ]
-        },
-        {
-          "id": "task4",
-          "title": "Create unit tests for UserProfileService",
-          "description": "Create unit tests for UserProfileService to validate the functionality of all implemented methods and API endpoints. The tests should cover all possible edge cases. Use a testing framework like JUnit or NUnit. The acceptance criteria will be a 100% pass rate.",
-          "priority": "3",
-          "estimate": 0,
-          "dependencies": [
-            "task2",
-            "task3"
-          ]
-        }
-      ]
-    },
-    {
-      "name": "LoggingService",
-      "service_type": "monitoring",
-      "description": "Collects logs and metrics of service operations for monitoring and audit purposes.",
-      "dependencies": [],
-      "database_requirements": {
-        "type": "document",
-        "description": "Stores logs and audit trails of operations.",
-        "required": true
-      },
-      "low_level_tasks": [
-        {
-          "id": "task1",
-          "title": "Implement Logging Service",
-          "description": "Develop a logging service that collects logs and metrics of service operations. Use the Java programming language and the Log4j library version 2.13.3. The service should be able to handle different levels of logs including Error, Warning, Info, Debug, and Trace. The output data structure should be a JSON object containing the time of log, level of log, service name, and log message. No API endpoints are required for this task. The service should be able to handle 1000 logs per second.",
-          "priority": "1",
-          "estimate": 0,
-          "dependencies": []
-        },
-        {
-          "id": "task2",
-          "title": "Create Document Database",
-          "description": "Set up a document database to store logs and audit trails of operations. Use MongoDB version 4.4. Implement schema for the log document to include fields such as timestamp, service name, log level, and log message. The database should be able to handle 1000 writes per second.",
-          "priority": "2",
-          "estimate": 0,
-          "dependencies": [
-            "task1"
-          ]
-        },
-        {
-          "id": "task3",
-          "title": "Configure Log Storage",
-          "description": "Connect the logging service to the document database. Use the MongoDB Java Driver version 3.12 for this connection. Ensure the logs from the logging service are being correctly stored in the database as per the defined schema. Implement error handling for failed database writes.",
+          "title": "Configure Error Handling and Response Formatting",
+          "description": "Handle errors such as invalid inputs, and ToxicityAnalysisService unavailability. Configure the service to return appropriate HTTP status codes and messages in case of errors. Also, format the successful response in a standardized way for better frontend compatibility. Use Express.js middleware for error handling and response formatting.",
           "priority": "2",
           "estimate": 0,
           "dependencies": [
@@ -410,11 +172,12 @@
         },
         {
           "id": "task4",
-          "title": "Implement Log Retrieval",
-          "description": "Implement a feature to retrieve logs from the database. This should include filtering by time range, service name, and log level. Use the Java programming language and the MongoDB Java Driver for this task. The output should be a JSON array of log documents. The API endpoint for this feature should be GET /logs.",
-          "priority": "3",
+          "title": "Implement Performance Testing",
+          "description": "Ensure the service can handle high loads and is scalable. Use Apache JMeter for load testing. The service should be able to handle at least 1000 requests per minute without significant performance degradation. Also, test the service scalability by gradually increasing the load.",
+          "priority": "2",
           "estimate": 0,
           "dependencies": [
+            "task1",
             "task2",
             "task3"
           ]

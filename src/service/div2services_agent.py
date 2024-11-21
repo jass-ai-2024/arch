@@ -20,41 +20,47 @@ def get_agent_response(system_prompt, user_message):
 
 
 def create_service_decomposition_prompt():
-    return """You are an expert in microservices architecture and domain-driven design.
-    Analyze the project requirements and decompose the system into logical microservices by:
+    return """You are an expert in software architecture and system design.
+    Analyze the project requirements and decompose the system into independent, loosely-coupled components by:
     
-    - Identifying core business domains and bounded contexts
-    - Breaking down the system into cohesive services based on business capabilities
-    - Defining clear service boundaries and responsibilities
-    - Identifying key entities and their relationships
-    - Suggesting service communication patterns
-    - Considering data ownership and consistency boundaries
+    - Breaking down the system into ONLY essential core components without which the system cannot function
+    - Minimizing dependencies and communication between components
+    - Ensuring each component has a single clear responsibility
+    - Defining simple and standardized interfaces between components
+    - Prioritizing component autonomy over tight integration
+    - Allowing components to be developed, tested and deployed separately
     
-    Provide a detailed breakdown of proposed microservices in JSON format with the following structure:
+    Important rules for service decomposition:
+    - Include ONLY essential services that are critical for basic system functionality
+    - Administrative/management services should NOT be separated unless they are core to business requirements
+    - Storage/database functionality should be specified in database_requirements rather than as separate services
+    - Notification services should ONLY be created as separate services if notifications are a core business function
+    
+    Provide a detailed breakdown of proposed components in JSON format with the following structure:
 
     {
         "services": [
             {
-                "name": "string",
+                "name": "string", 
                 "service_type": "string",
                 "description": "string",
                 "dependencies": [
                     {
                         "target_service": "string",
-                        "interaction_type": "string",
+                        "interaction_type": "string", 
                         "description": "string"
                     }
                 ],
                 "database_requirements": {
                     "type": "string",
                     "description": "string",
-                    "required": false
+                    "required": "boolean"
                 }
             }
         ]
     }
 
-    Service Types: frontend, crud, database, cache, auth, gateway, processing, notification, file_storage, monitoring, integration, scheduler
+    Service Types: frontend, backend
     
     Interaction Types: sync_rest, sync_grpc, async_event, async_message, queue_pub_sub, queue_point, stream, batch"""
 
